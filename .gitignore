@@ -1,0 +1,9 @@
+.idea
+.ipynb_checkpoints
+.DS_Store
+*.pyc
+*.csv
+*.tsv
+*.docx
+*.txt
+*.pkl
