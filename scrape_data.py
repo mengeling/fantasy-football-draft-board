@@ -103,7 +103,14 @@ def scrape_bio(df, headers):
             img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
-            rows.append([val.text.split(": ")[1] for val in bio_details])
+            bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
+            row_data = []
+            for header in headers[1:]:
+                if header.title() in bio_details_dict.keys():
+                    row_data.append(bio_details_dict[header.title()])
+                else:
+                    row_data.append(None)
+            rows.append(row_data)
 
         # If it's a team go to Team Stats tab in the top banner and get team logo
         else:
@@ -118,10 +125,10 @@ def scrape_bio(df, headers):
     return pd.DataFrame(rows, columns=headers)
 
 
-
-
 if __name__ == "__main__":
 
     df_rankings = scrape_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
-    df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
-    stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
+    df = df_rankings[df_rankings["id"] == "18521"]
+    df_bio = scrape_bio(df, c.BIO_HEADERS)
+    print(df_bio)
+    # stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)

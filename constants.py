@@ -1,9 +1,10 @@
+IMG_PATH = "data/"
+
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
 STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 
-IMG_PATH = "data/"
-
+BIO_HEADERS = ["id", "height", "weight", "age", "college"]
 RANKINGS_HEADERS = [
     "id",
     "rank",
@@ -121,4 +122,3 @@ STATS_HEADERS = {
         "fantasy_pts_per_game",
     ],
 }
-BIO_HEADERS = ["id", "height", "weight", "age", "college"]
