@@ -97,20 +97,22 @@ def scrape_bio(df, headers):
     rows = []
     for i, row in df.iterrows():
 
-        # If it's a player get image URL and get bio details in the clearfix div
+        # If it's a player get bio details in the clearfix div
         html = BeautifulSoup(requests.get(row["bio_url"]).text, "html.parser")
         if html.find("img", class_="hidden-phone"):
-            img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
-            row_data = []
+            row_data = [row["id"]]
             for header in headers[1:]:
                 if header.title() in bio_details_dict.keys():
                     row_data.append(bio_details_dict[header.title()])
                 else:
                     row_data.append(None)
             rows.append(row_data)
+
+            # Get image URL
+            img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
 
         # If it's a team go to Team Stats tab in the top banner and get team logo
         else:
@@ -119,16 +121,18 @@ def scrape_bio(df, headers):
             html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
-        # Save the image in the data directory
+        # Make request to get image content. If fails, use missing photo. Save image in data directory
+        response = requests.get(img_url)
+        if response.status_code == 403:
+            img_url = "https://images.fantasypros.com/images/photo_missing_square.jpg"
+            response = requests.get(img_url)
         with open(c.IMG_PATH + row["id"] + ".jpg", "wb") as f:
-            f.write(requests.get(img_url).content)
+            f.write(response.content)
     return pd.DataFrame(rows, columns=headers)
 
 
 if __name__ == "__main__":
 
     df_rankings = scrape_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
-    df = df_rankings[df_rankings["id"] == "18521"]
-    df_bio = scrape_bio(df, c.BIO_HEADERS)
-    print(df_bio)
-    # stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
+    df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
+    stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
