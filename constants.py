@@ -1,8 +1,13 @@
-RANKINGS_URL = "https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"
+BASE_URL = "https://www.fantasypros.com"
+
+IMG_PATH = "data/"
+
+RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
 RANKINGS_HEADERS = [
     "id",
     "rank",
     "name",
+    "bio_url",
     "team",
     "position",
     "position_ranking",
@@ -14,7 +19,7 @@ RANKINGS_HEADERS = [
     "avg_draft_pick",
 ]
 
-STATS_URL = "https://www.fantasypros.com/nfl/stats/{}.php"
+STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 STATS_HEADERS = {
     "qb": [
         "id",

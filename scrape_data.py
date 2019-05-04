@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import constants as c
 
 
-def get_rankings(url, headers):
+def scrape_rankings(url, headers):
     """
     Get fantasy rankings using the URL provided
 
@@ -34,13 +34,14 @@ def get_rankings(url, headers):
                 # Skip index 1 (empty check box) and get name and team from index 2
                 # Split position and position ranking from index 3 and then rest are just text
                 if i == 2:
+                    player = td.find("a")
+                    bio_url = c.BASE_URL + player.attrs.get("href")
+                    name = player.find("span", class_="full-name").text
                     if td.find("small", class_="grey"):
-                        name = td.find("a").find("span", class_="full-name").text
                         team = td.find("small", class_="grey").text
                     else:
-                        team = td.find("a").find("span", class_="full-name").text
-                        name, team = team.replace(")", "").split(" (")
-                    row_data.extend([name, team])
+                        name, team = name.replace(")", "").split(" (")
+                    row_data.extend([name, bio_url, team])
                 elif i == 3:
                     pos_ranking = re.split(r"(\d+)", td.text)
                     row_data.extend(pos_ranking[:-1])
@@ -50,11 +51,11 @@ def get_rankings(url, headers):
     return pd.DataFrame(rows, columns=headers)
 
 
-def get_previous_stats(url, headers):
+def scrape_previous_stats(url, headers):
     """
     Get stats from the previous year using the URL provided
 
-    :param html: String, URL for the rankings
+    :param html: String, URL for the stats
     :param headers: List, column headers
     :return: Pandas dataframe
     """
@@ -87,7 +88,34 @@ def get_previous_stats(url, headers):
     return stat_dict
 
 
+def scrape_bio(df):
+    """
+    Go to player's page to get their picture and bio
+
+    :param df: Pandas dataframe with bio URLs
+    :return: Pandas dataframe
+    """
+
+    # Iterate through df and get picture and bio details
+    for i, row in df.iterrows():
+        html = BeautifulSoup(requests.get(row["bio_url"]).text, "html.parser")
+        if html.find("img", class_="hidden-phone"):
+            img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
+            html.find("div", class_="clearfix")
+        else:
+            banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
+            stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
+            html2 = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
+            img_url = "https:" + html2.find("div", class_="three columns").find("img")["src"]
+        img_path = c.IMG_PATH + row["id"] + ".jpg"
+        with open(img_path, "wb") as f:
+            f.write(requests.get(img_url).content)
+
+
+
+
 if __name__ == "__main__":
 
-    df_rankings = get_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
-    stat_dict = get_previous_stats(c.STATS_URL, c.STATS_HEADERS)
+    df_rankings = scrape_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
+    df_bio = scrape_bio(df_rankings)
+    # stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
