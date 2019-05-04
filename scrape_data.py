@@ -83,13 +83,11 @@ def get_previous_stats(url, headers):
                 else:
                     row_data.append(td.text)
             rows.append(row_data)
-        df = pd.DataFrame(rows, columns=v)
-        print(df.head())
-        stat_dict[k] = df
+        stat_dict[k] = pd.DataFrame(rows, columns=v)
     return stat_dict
 
 
 if __name__ == "__main__":
 
-    # df_rankings = get_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
+    df_rankings = get_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
     stat_dict = get_previous_stats(c.STATS_URL, c.STATS_HEADERS)
