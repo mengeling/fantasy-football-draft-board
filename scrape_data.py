@@ -73,43 +73,49 @@ def scrape_previous_stats(url, headers):
         for row in table.find_all("tr"):
 
             # Get player ID from the class name and then loop through values in the row
+            # Skip player name in index 0 and then get stats
             class_name = row.attrs.get("class")
             row_data = [re.split(r"(\d+)", class_name[0])[1]]
             for i, td in enumerate(row.find_all("td")[:-1]):
-
-                # Get player name from  link and then get rest of the values normally
-                if i == 0:
-                    name = td.find("a", class_="player-name").text
-                    row_data.append(name)
-                else:
+                if i > 0:
                     row_data.append(td.text)
             rows.append(row_data)
         stat_dict[k] = pd.DataFrame(rows, columns=v)
     return stat_dict
 
 
-def scrape_bio(df):
+def scrape_bio(df, headers):
     """
     Go to player's page to get their picture and bio
 
     :param df: Pandas dataframe with bio URLs
+    :param headers: List, column headers
     :return: Pandas dataframe
     """
 
     # Iterate through df and get picture and bio details
+    rows = []
     for i, row in df.iterrows():
+
+        # If it's a player get image URL and get bio details in the clearfix div
         html = BeautifulSoup(requests.get(row["bio_url"]).text, "html.parser")
         if html.find("img", class_="hidden-phone"):
             img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
-            html.find("div", class_="clearfix")
+            bio_div = html.find("div", class_="clearfix")
+            bio_details = bio_div.find_all("span", class_="bio-detail")
+            rows.append([val.text.split(": ")[1] for val in bio_details])
+
+        # If it's a team go to Team Stats tab in the top banner and get team logo
         else:
             banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
             stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
-            html2 = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
-            img_url = "https:" + html2.find("div", class_="three columns").find("img")["src"]
-        img_path = c.IMG_PATH + row["id"] + ".jpg"
-        with open(img_path, "wb") as f:
+            html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
+            img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
+
+        # Save the image in the data directory
+        with open(c.IMG_PATH + row["id"] + ".jpg", "wb") as f:
             f.write(requests.get(img_url).content)
+    return pd.DataFrame(rows, columns=headers)
 
 
 
@@ -117,5 +123,5 @@ def scrape_bio(df):
 if __name__ == "__main__":
 
     df_rankings = scrape_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
-    df_bio = scrape_bio(df_rankings)
-    # stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
+    df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
+    stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)

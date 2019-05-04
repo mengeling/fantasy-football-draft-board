@@ -1,8 +1,9 @@
 BASE_URL = "https://www.fantasypros.com"
+RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
+STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 
 IMG_PATH = "data/"
 
-RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
 RANKINGS_HEADERS = [
     "id",
     "rank",
@@ -18,12 +19,9 @@ RANKINGS_HEADERS = [
     "std_dev_ranking",
     "avg_draft_pick",
 ]
-
-STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 STATS_HEADERS = {
     "qb": [
         "id",
-        "name",
         "pass_cmp",
         "pass_att",
         "pass_cmp_pct",
@@ -42,7 +40,6 @@ STATS_HEADERS = {
     ],
     "rb": [
         "id",
-        "name",
         "rush_att",
         "rush_yds",
         "rush_yds_per_att",
@@ -61,7 +58,6 @@ STATS_HEADERS = {
     ],
     "wr": [
         "id",
-        "name",
         "receptions",
         "rec_tgt",
         "rec_yds",
@@ -79,7 +75,6 @@ STATS_HEADERS = {
     ],
     "te": [
         "id",
-        "name",
         "receptions",
         "rec_tgt",
         "rec_yds",
@@ -97,7 +92,6 @@ STATS_HEADERS = {
     ],
     "k": [
         "id",
-        "name",
         "field_goals",
         "fg_att",
         "fg_pct",
@@ -115,7 +109,6 @@ STATS_HEADERS = {
     ],
     "dst": [
         "id",
-        "name",
         "sacks",
         "int",
         "fumbles_recovered",
@@ -128,3 +121,4 @@ STATS_HEADERS = {
         "fantasy_pts_per_game",
     ],
 }
+BIO_HEADERS = ["id", "height", "weight", "age", "college"]
