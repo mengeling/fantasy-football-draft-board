@@ -93,7 +93,7 @@ def scrape_bio(df, headers):
     :return: Pandas dataframe
     """
 
-    # Iterate through df and get picture and bio details
+    # Iterate through player rankings and get bio details and picture
     rows = []
     for i, row in df.iterrows():
 
@@ -102,7 +102,11 @@ def scrape_bio(df, headers):
         if html.find("img", class_="hidden-phone"):
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
+
+            # Create dictionary by using the semi-colon to split the type of detail and value (e.g. Weight: 230lbs)
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
+
+            # Create list with ID then look up values from dict for other columns. If not in dict assign null
             row_data = [row["id"]]
             for header in headers[1:]:
                 if header.title() in bio_details_dict.keys():
