@@ -3,6 +3,7 @@ IMG_PATH = "data/"
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
 STATS_URL = BASE_URL + "/nfl/stats/{}.php"
+MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
 
 BIO_HEADERS = ["id", "height", "weight", "age", "college"]
 RANKINGS_HEADERS = [

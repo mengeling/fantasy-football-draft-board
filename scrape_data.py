@@ -7,11 +7,27 @@ from bs4 import BeautifulSoup
 import constants as c
 
 
+def download_photo(img_url, file_path):
+    """
+    Use image URL to download player's photo and dump it in the data directory.
+    If it fails with 403 error, save the missing person photo.
+
+    :param img_url: String, URL to download the photo
+    :param file_path: String, file path to dump the photo
+    """
+
+    response = requests.get(img_url)
+    if response.status_code == 403:
+        response = requests.get(c.MISSING_PHOTO_URL)
+    with open(file_path, "wb") as f:
+        f.write(response.content)
+
+
 def scrape_rankings(url, headers):
     """
     Get fantasy rankings using the URL provided
 
-    :param html: String, URL for the rankings
+    :param url: String, URL for the rankings
     :param headers: List, column headers
     :return: Pandas dataframe
     """
@@ -55,7 +71,7 @@ def scrape_previous_stats(url, headers):
     """
     Get stats from the previous year using the URL provided
 
-    :param html: String, URL for the stats
+    :param url: String, URL for the stats
     :param headers: List, column headers
     :return: Pandas dataframe
     """
@@ -103,7 +119,7 @@ def scrape_bio(df, headers):
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
 
-            # Create dictionary by using the semi-colon to split the type of detail and value (e.g. Weight: 230lbs)
+            # Create dictionary by using semi-colon to split detail type and value (e.g. Weight: 230lbs)
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
             # Create list with ID then look up values from dict for other columns. If not in dict assign null
@@ -113,9 +129,9 @@ def scrape_bio(df, headers):
                     row_data.append(bio_details_dict[header.title()])
                 else:
                     row_data.append(None)
-            rows.append(row_data)
 
-            # Get image URL
+            # Add details to list and get image URL
+            rows.append(row_data)
             img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
 
         # If it's a team go to Team Stats tab in the top banner and get team logo
@@ -125,13 +141,8 @@ def scrape_bio(df, headers):
             html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
-        # Make request to get image content. If fails, use missing photo. Save image in data directory
-        response = requests.get(img_url)
-        if response.status_code == 403:
-            img_url = "https://images.fantasypros.com/images/photo_missing_square.jpg"
-            response = requests.get(img_url)
-        with open(c.IMG_PATH + row["id"] + ".jpg", "wb") as f:
-            f.write(response.content)
+        # Retrieve and dump photo. At end of loop create and return bio df
+        download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
     return pd.DataFrame(rows, columns=headers)
 
 
