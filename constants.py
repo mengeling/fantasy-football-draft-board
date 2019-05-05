@@ -1,9 +1,10 @@
 IMG_PATH = "data/"
 
 BASE_URL = "https://www.fantasypros.com"
-RANKINGS_URL = BASE_URL + "/nfl/rankings/consensus-cheatsheets.php"
+RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php?filters=f3bc15d83d"
 STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
+LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fantasypros.com/"
 
 BIO_HEADERS = ["id", "height", "weight", "age", "college"]
 RANKINGS_HEADERS = [

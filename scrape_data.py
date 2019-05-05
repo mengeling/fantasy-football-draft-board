@@ -1,4 +1,5 @@
 import requests
+import os
 import sys
 import re
 import pandas as pd
@@ -23,17 +24,36 @@ def download_photo(img_url, file_path):
         f.write(response.content)
 
 
-def scrape_rankings(url, headers):
+def login_fpros(url, user, pswd):
+    """
+    Use username and password to log into fantasy pros
+
+    :param url: String, URL to the login page
+    :param user: String, fantasy pros username
+    :param pswd: String, fantasy pros password
+    :return: Object, logged in request session
+    """
+
+    session = requests.session()
+    html = BeautifulSoup(session.get(url).text, "html.parser")
+    token = html.find("input", {"name": "csrfmiddlewaretoken"}).attrs.get("value")
+    payload = {"username": user, "password": pswd, "csrfmiddlewaretoken": token}
+    session.post(url, data=payload, headers=dict(referer=url))
+    return session
+
+
+def scrape_rankings(session, url, headers):
     """
     Get fantasy rankings using the URL provided
 
+    :param session: Object, logged in request session
     :param url: String, URL for the rankings
     :param headers: List, column headers
     :return: Pandas dataframe
     """
 
     # Use beautiful soup to retrieve HTML table with rankings
-    html = BeautifulSoup(requests.get(url).text, "html.parser")
+    html = BeautifulSoup(session.get(url).text, "html.parser")
     table = html.find("table", id="rank-data").find_all("tbody")[0]
 
     # Iterate through the rows (tr) in the table
@@ -119,7 +139,7 @@ def scrape_bio(df, headers):
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
 
-            # Create dictionary by using semi-colon to split detail type and value (e.g. Weight: 230lbs)
+            # Use semi-colon to split detail type and value and put in dict (e.g. Weight: 230lbs)
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
             # Create list with ID then look up values from dict for other columns. If not in dict assign null
@@ -148,6 +168,7 @@ def scrape_bio(df, headers):
 
 if __name__ == "__main__":
 
-    df_rankings = scrape_rankings(c.RANKINGS_URL, c.RANKINGS_HEADERS)
+    session = login_fpros(c.LOGIN_URL, os.environ["FPROS_USER"], os.environ["FPROS_PSWD"])
+    df_rankings = scrape_rankings(session, c.RANKINGS_URL.format(sys.argv[1]), c.RANKINGS_HEADERS)
     df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
     stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
