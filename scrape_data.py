@@ -2,6 +2,8 @@ import requests
 import os
 import sys
 import re
+import time
+import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 
@@ -161,14 +163,35 @@ def scrape_bio(df, headers):
             html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
-        # Retrieve and dump photo. At end of loop create and return bio df
+        # Retrieve and dump photo and then wait a second or two
         download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
+        time.sleep(np.random.uniform(0, 2, 1)[0])
     return pd.DataFrame(rows, columns=headers)
 
 
 if __name__ == "__main__":
 
+    # Create session object logged into fantasy pros
     session = login_fpros(c.LOGIN_URL, os.environ["FPROS_USER"], os.environ["FPROS_PSWD"])
-    df_rankings = scrape_rankings(session, c.RANKINGS_URL.format(sys.argv[1]), c.RANKINGS_HEADERS)
+
+    # Get URLs for fantasy pros rankings and stats using scoring settings passed into script
+    if sys.argv[1] == "standard":
+        rankings_url = c.RANKINGS_URL.format("consensus")
+        stats_url = c.STATS_URL
+    elif sys.argv[1] == "ppr":
+        rankings_url = c.RANKINGS_URL.format("ppr")
+        stats_url = c.STATS_URL.format("PPR")
+    elif sys.argv[1] == "half":
+        rankings_url = c.RANKINGS_URL.format("half-point-ppr")
+        stats_url = c.STATS_URL.format("HALF")
+
+    # Use urls to scrape rankings and stats
+    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS)
     df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
-    stat_dict = scrape_previous_stats(c.STATS_URL, c.STATS_HEADERS)
+    stat_dict = scrape_previous_stats(stats_url, c.STATS_HEADERS)
+
+    # Write data to postgres
+    df_rankings.to_sql("rankings", con=c.DB_ENGINE, if_exists="replace", index=False)
+    df_bio.to_sql("bio", con=c.DB_ENGINE, if_exists="replace", index=False)
+    for k, v in stat_dict.items():
+        v.to_sql("stats_" + k, con=c.DB_ENGINE, if_exists="replace", index=False)

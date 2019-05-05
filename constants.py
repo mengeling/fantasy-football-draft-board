@@ -6,6 +6,8 @@ STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
 LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fantasypros.com/"
 
+DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
+
 BIO_HEADERS = ["id", "height", "weight", "age", "college"]
 RANKINGS_HEADERS = [
     "id",
