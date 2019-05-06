@@ -6,6 +6,7 @@ import time
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
+from sqlalchemy import create_engine
 
 import constants as c
 
@@ -44,12 +45,14 @@ def login_fpros(url, user, pswd):
     return session
 
 
-def scrape_rankings(session, url, headers):
+def scrape_rankings(session, url, table_name, engine, headers):
     """
     Get fantasy rankings using the URL provided
 
     :param session: Object, logged in request session
     :param url: String, URL for the rankings
+    :param table_name: String, name of the SQL table
+    :param engine: Object, DB connection
     :param headers: List, column headers
     :return: Pandas dataframe
     """
@@ -86,20 +89,25 @@ def scrape_rankings(session, url, headers):
                 elif i == 0 or i > 3:
                     row_data.append(td.text)
             rows.append(row_data)
-    return pd.DataFrame(rows, columns=headers)
+
+    # Create dataframe, write it to provided SQL table, and return it
+    df = pd.DataFrame(rows, columns=headers)
+    df.to_sql(table_name, con=engine, if_exists="replace", index=False)
+    return df
 
 
-def scrape_previous_stats(url, headers):
+def scrape_previous_stats(url, table_name, engine, headers):
     """
     Get stats from the previous year using the URL provided
 
     :param url: String, URL for the stats
+    :param table_name: String, name of the SQL table
+    :param engine: Object, DB connection
     :param headers: List, column headers
     :return: Pandas dataframe
     """
 
     # Iterate through each position
-    stat_dict = {}
     for k, v in headers.items():
 
         # Use dictionary keys to retrieve HTML table for each position
@@ -118,15 +126,19 @@ def scrape_previous_stats(url, headers):
                 if i > 0:
                     row_data.append(td.text)
             rows.append(row_data)
-        stat_dict[k] = pd.DataFrame(rows, columns=v)
-    return stat_dict
+
+        # Create dataframe and write it to provided SQL table
+        df = pd.DataFrame(rows, columns=v)
+        df.to_sql(table_name + k, con=engine, if_exists="replace", index=False)
 
 
-def scrape_bio(df, headers):
+def scrape_bio(df, table_name, engine, headers):
     """
     Go to player's page to get their picture and bio
 
     :param df: Pandas dataframe with bio URLs
+    :param table_name: String, name of the SQL table
+    :param engine: Object, DB connection
     :param headers: List, column headers
     :return: Pandas dataframe
     """
@@ -166,13 +178,13 @@ def scrape_bio(df, headers):
         # Retrieve and dump photo and then wait a second or two
         download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
         time.sleep(np.random.uniform(0, 2, 1)[0])
-    return pd.DataFrame(rows, columns=headers)
+
+    # Create dataframe and write it to provided SQL table
+    df = pd.DataFrame(rows, columns=headers)
+    df.to_sql(table_name, con=engine, if_exists="replace", index=False)
 
 
 if __name__ == "__main__":
-
-    # Create session object logged into fantasy pros
-    session = login_fpros(c.LOGIN_URL, os.environ["FPROS_USER"], os.environ["FPROS_PSWD"])
 
     # Get URLs for fantasy pros rankings and stats using scoring settings passed into script
     if sys.argv[1] == "standard":
@@ -180,18 +192,16 @@ if __name__ == "__main__":
         stats_url = c.STATS_URL
     elif sys.argv[1] == "ppr":
         rankings_url = c.RANKINGS_URL.format("ppr")
-        stats_url = c.STATS_URL.format("PPR")
+        stats_url = c.STATS_URL + "?scoring=PPR"
     elif sys.argv[1] == "half":
         rankings_url = c.RANKINGS_URL.format("half-point-ppr")
-        stats_url = c.STATS_URL.format("HALF")
+        stats_url = c.STATS_URL + "?scoring=HALF"
 
-    # Use urls to scrape rankings and stats
-    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS)
-    df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
-    stat_dict = scrape_previous_stats(stats_url, c.STATS_HEADERS)
+    # Create session that's logged into fantasy pros and create DB engine object
+    session = login_fpros(c.LOGIN_URL, os.environ["FPROS_USER"], os.environ["FPROS_PSWD"])
+    engine = create_engine(c.DB_ENGINE)
 
-    # Write data to postgres
-    df_rankings.to_sql("rankings", con=c.DB_ENGINE, if_exists="replace", index=False)
-    df_bio.to_sql("bio", con=c.DB_ENGINE, if_exists="replace", index=False)
-    for k, v in stat_dict.items():
-        v.to_sql("stats_" + k, con=c.DB_ENGINE, if_exists="replace", index=False)
+    # Scrape rankings, stats, and bios and write them to DB
+    df_rankings = scrape_rankings(session, rankings_url, "rankings", engine, c.RANKINGS_HEADERS)
+    scrape_previous_stats(stats_url, "stats_", engine, c.STATS_HEADERS)
+    scrape_bio(df_rankings, "bios", engine, c.BIO_HEADERS)
