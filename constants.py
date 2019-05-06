@@ -1,4 +1,4 @@
-IMG_PATH = "data/"
+DATA_PATH = "data/"
 
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php?filters=f3bc15d83d"
@@ -23,6 +23,22 @@ RANKINGS_HEADERS = [
     "avg_ranking",
     "std_dev_ranking",
     "avg_draft_pick",
+]
+STATS_ALL_HEADERS = [
+    "id",
+    "fantasy_pts",
+    "position",
+    "pass_cmp",
+    "pass_att",
+    "pass_yds",
+    "pass_td",
+    "pass_int",
+    "rush_att",
+    "rush_yds",
+    "rush_td",
+    "receptions",
+    "rec_yds",
+    "rec_td"
 ]
 STATS_HEADERS = {
     "qb": [
@@ -56,7 +72,7 @@ STATS_HEADERS = {
         "rec_yds",
         "rec_yds_per_rec",
         "rec_td",
-        "fumble",
+        "fumbles",
         "games",
         "fantasy_pts",
         "fantasy_pts_per_game",
@@ -73,7 +89,7 @@ STATS_HEADERS = {
         "rush_att",
         "rush_yds",
         "rush_td",
-        "fumble",
+        "fumbles",
         "games",
         "fantasy_pts",
         "fantasy_pts_per_game",
@@ -90,7 +106,7 @@ STATS_HEADERS = {
         "rush_att",
         "rush_yds",
         "rush_td",
-        "fumble",
+        "fumbles",
         "games",
         "fantasy_pts",
         "fantasy_pts_per_game",
