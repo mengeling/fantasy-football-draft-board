@@ -45,6 +45,22 @@ def download_photo(img_url, file_path):
         f.write(response.content)
 
 
+def load_data(df, table_name, engine):
+    """
+    Write data to CSV and then load it into the DB
+
+    :param df: Pandas dataframe
+    :param table_name: String, name of the table
+    :param engine: Object, DB connection
+    :return:
+    """
+
+    # Write df to CSV, load it again to infer data types, and write it to table
+    df.to_csv(c.DATA_PATH + table_name, index=False)
+    df = pd.read_csv(c.DATA_PATH + table_name)
+    df.to_sql(table_name, con=engine, if_exists="replace", index=False)
+
+
 def create_stats_all(stats_dict, headers, table_name, engine):
     """
     Create all stats table that combines position stats tables
@@ -64,23 +80,21 @@ def create_stats_all(stats_dict, headers, table_name, engine):
         stats_lst.append(df)
     df = pd.concat(stats_lst)
 
-    # To drop duplicates, return the row with most points score for each player ID
+    # To drop duplicates, return row with most points scored for each player and then write to DB
     df = df.sort_values("fantasy_pts", ascending=False)
     df = df.groupby("id", as_index=False).first()
-
-    # Write df to CSV, load it again to infer dtypes, and write it to table
-    df.to_csv(c.DATA_PATH + table_name, index=False)
-    df = pd.read_csv(c.DATA_PATH + table_name)
-    df.to_sql(table_name, con=engine, if_exists="replace", index=False)
+    load_data(df, table_name, engine)
 
 
-def scrape_rankings(session, url, headers):
+def scrape_rankings(session, url, headers, table_name, engine):
     """
     Get fantasy rankings using the URL provided
 
     :param session: Object, logged in request session
     :param url: String, URL for the rankings
     :param headers: List, column headers
+    :param table_name: String, name of the table
+    :param engine: Object, DB connection
     :return: Pandas dataframe
     """
 
@@ -116,20 +130,19 @@ def scrape_rankings(session, url, headers):
                 elif i == 0 or i > 3:
                     row_data.append(td.text)
             rows.append(row_data)
-    return pd.DataFrame(rows, columns=headers)
-
-    # # Create dataframe, write it to provided SQL table, and return it
-    # df = pd.DataFrame(rows, columns=headers)
-    # df.to_sql(table_name, con=engine, if_exists="replace", index=False)
-    # return df
+    df = pd.DataFrame(rows, columns=headers)
+    load_data(df, table_name, engine)
+    return df
 
 
-def scrape_previous_stats(url, headers_dict):
+def scrape_previous_stats(url, headers_dict, table_name, engine):
     """
     Get stats from the previous year using the URL provided
 
     :param url: String, URL for the stats
     :param headers_dict: Dictionary, positions are keys and values are column headers for that position
+    :param table_name: String, name of the table
+    :param engine: Object, DB connection
     :return: Dictionary, keys are position strings and values are stat dfs
     """
 
@@ -157,16 +170,19 @@ def scrape_previous_stats(url, headers_dict):
         # Create dataframe for the position, add position, and add df to dictionary
         df = pd.DataFrame(rows, columns=v)
         df["position"] = k
+        load_data(df, table_name + k, engine)
         stats_dict[k] = df
     return stats_dict
 
 
-def scrape_bio(df, headers):
+def scrape_bio(df, headers, table_name, engine):
     """
     Go to player's page to get their picture and bio
 
     :param df: Pandas dataframe with bio URLs
     :param headers: List, column headers
+    :param table_name: String, name of the table
+    :param engine: Object, DB connection
     :return: Pandas dataframe
     """
 
@@ -205,7 +221,8 @@ def scrape_bio(df, headers):
         # Retrieve and dump photo and then wait a second or two
         download_photo(img_url, c.DATA_PATH + row["id"] + ".jpg")
         time.sleep(np.random.uniform(0, 2, 1)[0])
-    return pd.DataFrame(rows, columns=headers)
+    df = pd.DataFrame(rows, columns=headers)
+    load_data(df, table_name, engine)
 
 
 if __name__ == "__main__":
@@ -226,14 +243,7 @@ if __name__ == "__main__":
     engine = create_engine(c.DB_ENGINE)
 
     # Scrape rankings, stats, and bios and load them into the DB
-    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS)
-    stats_dict = scrape_previous_stats(stats_url, c.STATS_HEADERS)
-    df_stats_all = create_stats_all(stats_dict, c.STATS_ALL_HEADERS)
-    df_bio = scrape_bio(df_rankings, c.BIO_HEADERS)
-    load_data()
-
-    # df_rankings = scrape_rankings(session, rankings_url, "rankings", engine, c.RANKINGS_HEADERS)
-    # stats_dict = scrape_previous_stats(stats_url, "stats_", engine, c.STATS_HEADERS)
-    # df_stats_all = create_stats_all(stats_dict, "stats_", engine, c.STATS_ALL_HEADERS)
-    # df_bio = scrape_bio(df_rankings, "bios", engine, c.BIO_HEADERS)
-    # load_data(df_rankings)
+    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS, "rankings", engine)
+    stats_dict = scrape_previous_stats(stats_url, c.STATS_HEADERS, "stats_", engine)
+    create_stats_all(stats_dict, c.STATS_ALL_HEADERS, "stats_all", engine)
+    scrape_bio(df_rankings, c.BIO_HEADERS, "bios", engine)

@@ -38,7 +38,7 @@ STATS_ALL_HEADERS = [
     "rush_td",
     "receptions",
     "rec_yds",
-    "rec_td"
+    "rec_td",
 ]
 STATS_HEADERS = {
     "qb": [
