@@ -56,44 +56,56 @@ def load_data(df, table_name, engine):
     """
 
     # Write df to CSV, load it again to infer data types, and write it to table
-    df.to_csv(c.DATA_PATH + table_name, index=False)
-    df = pd.read_csv(c.DATA_PATH + table_name)
+    df.to_csv(c.DATA_PATH + table_name + ".csv", index=False)
+    df = pd.read_csv(c.DATA_PATH + table_name + ".csv")
     df.to_sql(table_name, con=engine, if_exists="replace", index=False)
 
 
-def create_stats_all(stats_dict, headers, table_name, engine):
+def create_stats_all(headers_dict, headers, engine):
     """
     Create all stats table that combines position stats tables
 
-    :param stats_dict: Dictionary, positions are keys and values are stats for that position
-    :param headers: List, column headers
-    :param table_name: String, name of the table
+    :param headers_dict: Dictionary, positions are keys and values are column headers for that position
+    :param headers: List, column headers for new table
     :param engine: Object, DB connection
     """
 
     # Loop through position stats, retrieve stat columns (add zeros if missing), and concatenate them together
     stats_lst = []
-    for k, v in stats_dict.items():
-        df = pd.DataFrame()
+    for k in headers_dict.keys():
+        df_stats = pd.read_sql_query("SELECT * FROM stats_{}".format(k), con=engine)
+        df_standardized_stats = pd.DataFrame()
         for col in headers:
-            df[col] = v[col] if col in v.columns else 0
-        stats_lst.append(df)
+            df_standardized_stats[col] = df_stats[col] if col in df_stats.columns else 0
+        stats_lst.append(df_standardized_stats)
     df = pd.concat(stats_lst)
 
     # To drop duplicates, return row with most points scored for each player and then write to DB
     df = df.sort_values("fantasy_pts", ascending=False)
     df = df.groupby("id", as_index=False).first()
-    load_data(df, table_name, engine)
+    load_data(df, "stats_all", engine)
 
 
-def scrape_rankings(session, url, headers, table_name, engine):
+def create_draft_board(query, engine):
+    """
+    Create draft board table by combining rankings, stats, and bios
+
+    :param query: String, SQL query that joins tables
+    :param engine: Object, DB connection
+    """
+
+    # Retrieve data and create draft board
+    df = pd.read_sql_query(query, engine)
+    load_data(df, "draft_board", engine)
+
+
+def scrape_rankings(session, url, headers, engine):
     """
     Get fantasy rankings using the URL provided
 
     :param session: Object, logged in request session
     :param url: String, URL for the rankings
     :param headers: List, column headers
-    :param table_name: String, name of the table
     :param engine: Object, DB connection
     :return: Pandas dataframe
     """
@@ -131,23 +143,21 @@ def scrape_rankings(session, url, headers, table_name, engine):
                     row_data.append(td.text)
             rows.append(row_data)
     df = pd.DataFrame(rows, columns=headers)
-    load_data(df, table_name, engine)
+    load_data(df, "rankings", engine)
     return df
 
 
-def scrape_previous_stats(url, headers_dict, table_name, engine):
+def scrape_previous_stats(url, headers_dict, engine):
     """
     Get stats from the previous year using the URL provided
 
     :param url: String, URL for the stats
     :param headers_dict: Dictionary, positions are keys and values are column headers for that position
-    :param table_name: String, name of the table
     :param engine: Object, DB connection
     :return: Dictionary, keys are position strings and values are stat dfs
     """
 
     # Iterate through each position to retrieve stats
-    stats_dict = {}
     for k, v in headers_dict.items():
 
         # Use dictionary keys to retrieve HTML table for each position
@@ -169,19 +179,16 @@ def scrape_previous_stats(url, headers_dict, table_name, engine):
 
         # Create dataframe for the position, add position, and add df to dictionary
         df = pd.DataFrame(rows, columns=v)
-        df["position"] = k
-        load_data(df, table_name + k, engine)
-        stats_dict[k] = df
-    return stats_dict
+        df["position"] = k.upper()
+        load_data(df, "stats_" + k, engine)
 
 
-def scrape_bio(df, headers, table_name, engine):
+def scrape_bios(df, headers, engine):
     """
     Go to player's page to get their picture and bio
 
     :param df: Pandas dataframe with bio URLs
     :param headers: List, column headers
-    :param table_name: String, name of the table
     :param engine: Object, DB connection
     :return: Pandas dataframe
     """
@@ -222,7 +229,7 @@ def scrape_bio(df, headers, table_name, engine):
         download_photo(img_url, c.DATA_PATH + row["id"] + ".jpg")
         time.sleep(np.random.uniform(0, 2, 1)[0])
     df = pd.DataFrame(rows, columns=headers)
-    load_data(df, table_name, engine)
+    load_data(df, "bios", engine)
 
 
 if __name__ == "__main__":
@@ -243,7 +250,10 @@ if __name__ == "__main__":
     engine = create_engine(c.DB_ENGINE)
 
     # Scrape rankings, stats, and bios and load them into the DB
-    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS, "rankings", engine)
-    stats_dict = scrape_previous_stats(stats_url, c.STATS_HEADERS, "stats_", engine)
-    create_stats_all(stats_dict, c.STATS_ALL_HEADERS, "stats_all", engine)
-    scrape_bio(df_rankings, c.BIO_HEADERS, "bios", engine)
+    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS, engine)
+    scrape_bios(df_rankings, c.BIO_HEADERS, engine)
+    scrape_previous_stats(stats_url, c.STATS_HEADERS, engine)
+
+    # Create combined stats table and consolidate rankings, stats, and bios in draft board
+    create_stats_all(c.STATS_HEADERS, c.STATS_ALL_HEADERS, engine)
+    create_draft_board(c.DRAFT_BOARD_QUERY, engine)

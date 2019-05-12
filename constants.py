@@ -142,3 +142,41 @@ STATS_HEADERS = {
         "fantasy_pts_per_game",
     ],
 }
+
+DRAFT_BOARD_QUERY = """
+    SELECT
+        r.id,
+        r.rank,
+        r.name,
+        r.team,
+        r.position,
+        b.height,
+        b.weight,
+        b.age,
+        b.college,
+        r.bye_week,
+        r.position_ranking,
+        r.best_ranking,
+        r.worst_ranking,
+        r.avg_ranking,
+        r.std_dev_ranking,
+        r.avg_draft_pick,
+        s.fantasy_pts,
+        s.pass_cmp,
+        s.pass_att,
+        s.pass_yds,
+        s.pass_td,
+        s.pass_int,
+        s.rush_att,
+        s.rush_yds,
+        s.rush_td,
+        s.receptions,
+        s.rec_yds,
+        s.rec_td
+    FROM rankings r
+    LEFT JOIN stats_all s
+    ON r.id = s.id
+    LEFT JOIN bios b
+    ON r.id = b.id
+    ORDER BY r.rank
+"""
