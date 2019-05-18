@@ -1,4 +1,4 @@
-DATA_PATH = "data/"
+IMG_PATH = "../app/static/img/"
 
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php?filters=f3bc15d83d"

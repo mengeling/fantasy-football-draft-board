@@ -56,8 +56,8 @@ def load_data(df, table_name, engine):
     """
 
     # Write df to CSV, load it again to infer data types, and write it to table
-    df.to_csv(c.DATA_PATH + table_name + ".csv", index=False)
-    df = pd.read_csv(c.DATA_PATH + table_name + ".csv")
+    df.to_csv(table_name + ".csv", index=False)
+    df = pd.read_csv(table_name + ".csv")
     df.to_sql(table_name, con=engine, if_exists="replace", index=False)
 
 
@@ -226,7 +226,7 @@ def scrape_bios(df, headers, engine):
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
         # Retrieve and dump photo and then wait a second or two
-        download_photo(img_url, c.DATA_PATH + row["id"] + ".jpg")
+        download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
         time.sleep(np.random.uniform(0, 2, 1)[0])
     df = pd.DataFrame(rows, columns=headers)
     load_data(df, "bios", engine)

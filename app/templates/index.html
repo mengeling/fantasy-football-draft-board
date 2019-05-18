@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Data Refresh Page</title>
+		<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+	</head>
+	<body>
+        <div class="logo-index">
+            <h3>In Partnership With</h3>
+            <img src="{{ url_for('static', filename='img/silvercar_logo.png') }}">
+        </div>
+        <header>
+            <a class="button" href="{{ url_for('new_reservation') }}">Create New Reservation</a>
+            <h1 class="header">All Reservations</h1>
+        </header>
+        <main>
+            <div class="select-container">
+                <select id="select-location" class="select" name="select">
+                    <option value="All">All Locations</option>
+                    {% for location in locations %}
+                    <option value="{{ location }}">{{ location }}</option>
+                    {% endfor %}
+                </select>
+                <select id="select-month" class="select" name="select">
+                    <option value="All">All Months</option>
+                    {% for month in months %}
+                    <option value="{{ month }}">{{ month }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="summary-stats-container-index">
+                <div class="summary-stats-index">
+                    <h3>Current</br>Reservations:</h3>
+                    <p class="total-count">{{ total_count }}</p>
+                </div>
+                <div class="summary-stats-index">
+                    <h3>Predicted</br>Cancellations:</h3>
+                    <p class="cancel-count">{{ cancel_count }}</p>
+                </div>
+                <div class="summary-stats-index">
+                    <h3>Percent</br>Cancelled:</h3>
+                    <p class="percent-cancelled">{{ percent_cancelled }}</p>
+                </div>
+                <div class="summary-stats-index">
+                    <h3>Predicted</br>Revenue:</h3>
+                    <p class="revenue">{{ revenue }}</p>
+                </div>
+            </div>
+        </main>
+        <div class="data">
+            {{ data | safe }}
+        </div>
+        <footer>
+            <p class="footer">Made by <a href="https://www.linkedin.com/in/mengeling/" target="_blank">Michael Engeling</a>
+        </footer>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script>var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+	</body>
+</html>
