@@ -150,10 +150,6 @@ DRAFT_BOARD_QUERY = """
         r.name,
         r.team,
         r.position,
-        b.height,
-        b.weight,
-        b.age,
-        b.college,
         r.bye_week,
         r.position_ranking,
         r.best_ranking,
@@ -176,7 +172,5 @@ DRAFT_BOARD_QUERY = """
     FROM rankings r
     LEFT JOIN stats_all s
     ON r.id = s.id
-    LEFT JOIN bios b
-    ON r.id = b.id
     ORDER BY r.rank
 """
