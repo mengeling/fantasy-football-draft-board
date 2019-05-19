@@ -147,6 +147,7 @@ DRAFT_BOARD_QUERY = """
     SELECT
         r.id,
         r.rank,
+        '<a href=''.''>' || r.name || '</a>' ||  ', ' || r.team || ', ' || r.position AS player,
         r.name,
         r.team,
         r.position,
