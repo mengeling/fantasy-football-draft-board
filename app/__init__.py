@@ -12,7 +12,7 @@ def index():
     """
     Renders index.html template for the main page of the app, using draft board
     """
-    return render_template('index.html', data=df.to_html(index=False))
+    return render_template('index.html', data=data)
 
 
 if __name__ == '__main__':
@@ -20,6 +20,8 @@ if __name__ == '__main__':
     # Create DB engine and read draft board table into pandas df
     engine = create_engine(c.DB_ENGINE)
     df = pd.read_sql_query("SELECT * FROM draft_board", con=engine)
+    df.columns = df.columns.str.upper()
+    data = df.to_html(index=False, escape=False)
 
     # Run the app
     app.run(debug=True)
