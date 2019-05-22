@@ -10,8 +10,11 @@
         <header>
         </header>
         <main>
+            <div class="player-details">
+                <img src="{{ url_for('static', filename=img_path) }}">
+            </div>
             <div class="draft-board">
-                {{ data | safe }}
+                {{ board | safe }}
             </div>
         </main>
         <footer>
