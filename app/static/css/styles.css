@@ -6,9 +6,23 @@ body {
 //  background-color: #E0E0E0;
 }
 
+.player-details {
+    width: 90%;
+    font-size: 0.7em;
+}
+
 .draft-board {
     width: 90%;
     height: 500px;
     overflow: scroll;
     font-size: 0.7em;
+    cursor: default;
+}
+
+.fake-link {
+    color: blue;
+}
+
+tr:hover {
+  background-color: #ADD8E6;
 }

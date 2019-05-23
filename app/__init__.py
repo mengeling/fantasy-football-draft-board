@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import pandas as pd
 from sqlalchemy import create_engine
 
@@ -10,21 +10,34 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def index():
     """
-    Renders index.html template with draft board table and selected/top player highlighted
+    Renders index.html template with draft board table and top available player highlighted
     """
 
-    # Retrieve player ID
-    id = request.args.get("id", None)
-    if id:
-        df_player = df[df["id"] == id]
-    else:
-        df_player = df.iloc[df["rank"].idxmin()]
-        id = df_player["id"]
+    # Get data and ID associated with the top ranked player
+    df_player = df.iloc[[df["rank"].idxmin()]]
+    player_id = df_player["id"][0]
 
-    # Use ID to retrieve image path along with player bio, rankings, and stats
-    img_path = "img/{}.jpg".format(id)
+    # Get image path, convert player details and draft board to HTML, and render them
+    img_path = "img/{}.jpg".format(player_id)
     board = df_board.to_html(index=False, escape=False)
-    return render_template("index.html", board=board, img_path=img_path)
+    player_details = df_player.to_html(index=False, escape=False)
+    return render_template("index.html", board=board, player_details=player_details, img_path=img_path)
+
+
+@app.route("/player-details/", methods=["GET"])
+def get_player_details():
+    """
+    Update player picture and details with the selected player
+    """
+
+    # Retrieve player ID and player details
+    player_id = request.args.get("player_id")
+    df_player = pd.DataFrame(df[df["id"] == int(player_id)])
+
+    # Get image path, convert player details and draft board to HTML, and render them
+    img_path = "img/{}.jpg".format(player_id)
+    player_details = df_player.to_html(index=False, escape=False)
+    return jsonify({"img_path": img_path, "player_details": player_details})
 
 
 if __name__ == "__main__":

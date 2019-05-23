@@ -11,7 +11,10 @@
         </header>
         <main>
             <div class="player-details">
-                <img src="{{ url_for('static', filename=img_path) }}">
+                <img class="player-pic" src="{{ url_for('static', filename=img_path) }}">
+                <div class="player-stats">
+                    {{ player_details | safe }}
+                </div>
             </div>
             <div class="draft-board">
                 {{ board | safe }}
@@ -20,5 +23,8 @@
         <footer>
             <p class="footer">Made by <a href="https://www.linkedin.com/in/mengeling/" target="_blank">Michael Engeling</a>
         </footer>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script>var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 	</body>
 </html>

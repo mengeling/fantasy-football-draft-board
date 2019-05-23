@@ -181,7 +181,6 @@ DRAFT_BOARD_QUERY = """
         r.name,
         r.team,
         r.position,
-        '<a href=''.''>' || r.name || '</a>' ||  ', ' || r.team || ', ' || r.position player,
         r.bye_week,
         r.position_ranking,
         r.best_ranking,

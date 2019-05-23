@@ -94,8 +94,10 @@ def create_draft_board(query, engine):
     :param engine: Object, DB connection
     """
 
-    # Retrieve data and create draft board
+    # Retrieve data from rankings, stats, and bios, add player column, and save draft board in DB and as CSV
     df = pd.read_sql_query(query, engine)
+    df["player"] = "<span class='fake-link' id='" + df["id"].astype(str) + "'>" + df["name"] \
+                   + ", " + df["team"] + ", " + df["position"] + "</span>"
     load_data(df, "draft_board", engine)
 
 
