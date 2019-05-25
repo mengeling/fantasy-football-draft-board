@@ -29,7 +29,8 @@ $( "div.draft-board" ).on("click", "tr", function () {
     contentType: "application/json; charset=utf-8",
     data: { player_id: $(this).find("td > span").attr("id") },
     success: function(data) {
-      $(".player-pic").attr("src", "/static/" + data.img_path);
+      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("id", data.player_id);
       $(".player-stats").html(data.player_details);
     }
   });
@@ -42,6 +43,23 @@ $( "button.draft-button" ).on("click", function () {
     url: $SCRIPT_ROOT + "/draft-player/",
     contentType: "application/json; charset=utf-8",
     data: { player_id: $(".player-pic").attr("id") },
+    success: function(data) {
+      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("id", data.player_id);
+      $(".player-stats").html(data.player_details);
+      $(".draft-board").html(data.board);
+    }
+  });
+})
+
+
+$( "input.update-rankings-button" ).on("click", function () {
+  if (!confirm('Download updated rankings?')) return false;
+  $.ajax({
+    type: "GET",
+    url: $SCRIPT_ROOT + "/get-data/",
+    contentType: "application/json; charset=utf-8",
+    data: { scoring_option: $(".scoring-options option:selected").val() },
     success: function(data) {
       $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
       $(".player-pic").attr("id", data.player_id);

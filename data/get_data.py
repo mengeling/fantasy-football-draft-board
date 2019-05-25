@@ -8,7 +8,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 
-import constants as c
+import data_constants as c
 
 
 def login_fpros(url, user, pswd):
@@ -205,7 +205,7 @@ def scrape_bios(df, headers, engine):
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
 
-            # Use semi-colon to split detail type and value and put in dict (e.g. Weight: 230lbs)
+            # Use colon to split detail type and value and put in dict (e.g. Weight: 230lbs)
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
             # Create list with ID then look up values from dict for other columns. If not in dict assign null
@@ -229,18 +229,19 @@ def scrape_bios(df, headers, engine):
 
         # Retrieve and dump photo and then wait a second or two
         download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
-        time.sleep(np.random.uniform(0, 2, 1)[0])
     df = pd.DataFrame(rows, columns=headers)
     load_data(df, "bios", engine)
 
 
-if __name__ == "__main__":
+def get_data(scoring_option="standard"):
+    """
+    Scrape data from fantasy pros and load it into DB
+    """
 
-    # Get URLs for fantasy pros rankings and stats using scoring settings passed into script
-    if sys.argv[1] == "standard":
+    if scoring_option == "standard":
         rankings_url = c.RANKINGS_URL.format("consensus")
         stats_url = c.STATS_URL
-    elif sys.argv[1] == "ppr":
+    elif scoring_option == "ppr":
         rankings_url = c.RANKINGS_URL.format("ppr")
         stats_url = c.STATS_URL + "?scoring=PPR"
     else:
@@ -260,3 +261,9 @@ if __name__ == "__main__":
     create_stats_all(c.STATS_HEADERS, c.STATS_ALL_HEADERS, engine)
     create_draft_board(c.DRAFT_BOARD_QUERY, engine)
     engine.execute(c.CREATE_DRAFTED_PLAYERS)
+
+
+if __name__ == "__main__":
+
+    # If executed as script pass scoring option argument into get_data function
+    get_data(sys.argv[1])

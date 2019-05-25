@@ -50,9 +50,8 @@ RENAMED_BOARD_HEADERS = {
     "rec_td": "RETD"
 }
 
-QUERY_BOARD_ALL = "SELECT * FROM draft_board"
-QUERY_BOARD_ID = "SELECT * FROM draft_board WHERE id = {}"
-QUERY_BOARD_NAME = "SELECT * FROM draft_board WHERE name ILIKE '%{}%'"
-QUERY_BOARD_NAME_POSITION = "SELECT * FROM draft_board WHERE position = '{}' AND name ILIKE '%{}%'"
+Q_BOARD_ALL = "SELECT * FROM draft_board"
+Q_BOARD_ID = "SELECT * FROM draft_board WHERE id = {}"
+Q_BOARD_NAME = "SELECT * FROM draft_board WHERE name ILIKE '%{}%'"
+Q_BOARD_NAME_POSITION = "SELECT * FROM draft_board WHERE position = '{}' AND name ILIKE '%{}%'"
 DELETE_PLAYER_BOARD = "DELETE FROM draft_board WHERE id = {}"
-
