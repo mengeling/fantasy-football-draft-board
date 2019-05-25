@@ -15,6 +15,19 @@
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
+                <button type="button" class="draft-button">DRAFT PLAYER</button>
+            </div>
+            <div class="position-player-search">
+                <select class="position-dropdown">
+                    <option value="ALL">ALL</option>
+                    <option value="QB">QB</option>
+                    <option value="RB">RB</option>
+                    <option value="WR">WR</option>
+                    <option value="TE">TE</option>
+                    <option value="K">K</option>
+                    <option value="DST">DST</option>
+                </select>
+                <input type="search" placeholder="Search..." class="search">
             </div>
             <div class="draft-board">
                 {{ board | safe }}

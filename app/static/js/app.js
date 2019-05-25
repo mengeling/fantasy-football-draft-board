@@ -1,4 +1,18 @@
-$( ".draft-board tr" ).click(function () {
+function get_board_subset() {
+  $.ajax({
+    type: "GET",
+    url: $SCRIPT_ROOT + "/get-board-subset/",
+    contentType: "application/json; charset=utf-8",
+    data: { position: $(".position-dropdown  option:selected").val(),
+            player: $("input.search").val() },
+    success: function(data) {
+      $(".draft-board").html(data.board);
+    }
+  });
+}
+
+
+$( "div.draft-board" ).on("click", "tr", function () {
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/player-details/",
@@ -9,4 +23,14 @@ $( ".draft-board tr" ).click(function () {
       $(".player-stats").html(data.player_details);
     }
   });
+})
+
+
+$( "select.position-dropdown" ).change(function () {
+  get_board_subset();
+})
+
+
+$( "input.search" ).on("input", function () {
+  get_board_subset();
 })
