@@ -256,6 +256,7 @@ if __name__ == "__main__":
     scrape_bios(df_rankings, c.BIO_HEADERS, engine)
     scrape_previous_stats(stats_url, c.STATS_HEADERS, engine)
 
-    # Create combined stats table and consolidate rankings, stats, and bios in draft board
+    # Create stats_all and consolidate rankings, stats, and bios in draft board and then create empty drafted_players
     create_stats_all(c.STATS_HEADERS, c.STATS_ALL_HEADERS, engine)
     create_draft_board(c.DRAFT_BOARD_QUERY, engine)
+    engine.execute(c.CREATE_DRAFTED_PLAYERS)

@@ -242,3 +242,8 @@ DRAFT_BOARD_QUERY = """
     ON r.id = b.id
     ORDER BY r.rank
 """
+
+CREATE_DRAFTED_PLAYERS = """
+    DROP TABLE IF EXISTS drafted_players;
+    CREATE TABLE drafted_players (LIKE draft_board);
+"""

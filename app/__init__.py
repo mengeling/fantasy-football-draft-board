@@ -7,10 +7,11 @@ import constants as c
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
-def index():
+def get_top_player_board():
     """
-    Renders index.html template with draft board table and top available player highlighted
+    Select top ranked player and get updated draft board
+
+    :return:
     """
 
     # Retrieve draft board data and get player ID associated with top ranked player (min rank)
@@ -18,11 +19,20 @@ def index():
     df_player = df.iloc[[df["rank"].idxmin()]]
     player_id = df_player["id"][0]
 
-    # Get image path, convert player details and draft board to HTML, and render them
-    img_path = "img/{}.jpg".format(player_id)
+    # Convert draft board and player details to HTML
     board = df[c.BOARD_HEADERS].rename(c.RENAMED_BOARD_HEADERS, index=str).to_html(index=False, escape=False)
     player_details = df_player.to_html(index=False, escape=False)
-    return render_template("index.html", board=board, player_details=player_details, img_path=img_path)
+    return board, player_details, player_id
+
+
+@app.route("/", methods=["GET"])
+def index():
+    """
+    Renders index.html template with draft board table and top available player highlighted
+    """
+
+    board, player_details, player_id = get_top_player_board()
+    return render_template("index.html", board=board, player_details=player_details, player_id=int(player_id))
 
 
 @app.route("/player-details/", methods=["GET"])
@@ -59,6 +69,24 @@ def get_board_subset():
     # Convert draft board to HTML and render it
     board = df[c.BOARD_HEADERS].rename(c.RENAMED_BOARD_HEADERS, index=str).to_html(index=False, escape=False)
     return jsonify({"board": board})
+
+
+@app.route("/draft-player/", methods=["GET"])
+def draft_player():
+    """
+    Move player from draft board to the drafted board
+    """
+
+    # Retrieve player details using player ID
+    player_id = request.args.get("player_id")
+    df_player = pd.read_sql_query(c.QUERY_BOARD_ID.format(player_id), con=engine)
+
+    # Write the player to the drafted players table and then remove them from draft board
+    df_player.to_sql("drafted_players", con=engine, index=False, if_exists="append")
+    engine.execute(c.DELETE_PLAYER_BOARD.format(player_id))
+
+    board, player_details, player_id = get_top_player_board()
+    return jsonify({"board": board, "player_details": player_details, "player_id": int(player_id)})
 
 
 if __name__ == "__main__":

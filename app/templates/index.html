@@ -11,7 +11,7 @@
         </header>
         <main>
             <div class="player-details">
-                <img class="player-pic" src="{{ url_for('static', filename=img_path) }}">
+                <img class="player-pic" id="{{ player_id }}" src="/static/img/{{ player_id }}.jpg">
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
