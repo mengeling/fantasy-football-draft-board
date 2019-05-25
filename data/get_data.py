@@ -27,20 +27,32 @@ def login_fpros(url, user, pswd):
     return session
 
 
-def download_photo(img_url, file_path):
+def download_photo(row_data, img_url, file_path):
     """
     Use image URL to download player's photo and dump it in the data directory.
     If it fails with 403 error, save the missing person photo.
 
+    :param row_data: List, player's bio details
     :param img_url: String, URL to download the photo
     :param file_path: String, file path to dump the photo
     """
 
+    # Get response from image URL. If error add 0 to bio_details in the photo column
     response = requests.get(img_url)
     if response.status_code == 403:
-        response = requests.get(c.MISSING_PHOTO_URL)
-    with open(file_path, "wb") as f:
-        f.write(response.content)
+        row_data.append(0)
+
+        # If there isn't already a missing photo placeholder image, download it
+        if not os.path.isfile(c.MISSING_PHOTO_PATH):
+            with open(c.MISSING_PHOTO_PATH, "wb") as f:
+                f.write(requests.get(c.MISSING_PHOTO_URL).content)
+
+    else:
+        # Otherwise add 1 to indicate player has photo and save it with ID in file path
+        row_data.append(1)
+        with open(file_path, "wb") as f:
+            f.write(response.content)
+    return row_data
 
 
 def load_data(df, table_name, engine):
@@ -197,36 +209,45 @@ def scrape_bios(df, headers, engine):
     rows = []
     for i, row in df.iterrows():
 
-        # If it's a player get bio details in the clearfix div
+        # Get HTML for the bio page and create list with ID to store bio details
         html = BeautifulSoup(requests.get(row["bio_url"]).text, "html.parser")
-        if html.find("img", class_="hidden-phone"):
+        row_data = [row["id"]]
+
+        # If there's an image with hidden-phone class it's a player so try and download the image
+        player_image = html.find("img", class_="hidden-phone")
+        if player_image:
+            img_url = "https:" + player_image["src"]
+            img_path =  c.IMG_PATH + row["id"] + ".jpg"
+            row_data = download_photo(row_data,  img_url, img_path)
+
+            # Get bio details in the clearfix div
             bio_div = html.find("div", class_="clearfix")
             bio_details = bio_div.find_all("span", class_="bio-detail")
 
             # Use colon to split detail type and value and put in dict (e.g. Weight: 230lbs)
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
-            # Create list with ID then look up values from dict for other columns. If not in dict assign null
-            row_data = [row["id"]]
+            # Loop through bio details columns. Add value from dict if available and null otherwise
             for header in headers[1:]:
                 if header.title() in bio_details_dict.keys():
                     row_data.append(bio_details_dict[header.title()])
                 else:
                     row_data.append(None)
 
-            # Add details to list and get image URL
-            rows.append(row_data)
-            img_url = "https:" + html.find("img", class_="hidden-phone")["src"]
-
-        # If it's a team go to Team Stats tab in the top banner and get team logo
+        # If it's a team go to Team Stats tab in the top banner to get team logo
         else:
             banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
             stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
             html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
-        # Retrieve and save photo
-        download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
+            # Download photo and add nulls to the rest of the bio details bc the columns aren't applicable
+            img_path = c.IMG_PATH + row["id"] + ".jpg"
+            row_data = download_photo(row_data, img_url, img_path)
+            row_data.extend([None, None, None, None])
+
+        # Add row data to bigger list and then create df from the big list
+        rows.append(row_data)
     df = pd.DataFrame(rows, columns=headers)
     load_data(df, "bios", engine)
 
@@ -259,7 +280,6 @@ def get_data(scoring_option):
     # Create stats_all and consolidate rankings, stats, and bios in draft board and then create empty drafted_players
     create_stats_all(c.STATS_HEADERS, c.STATS_ALL_HEADERS, engine)
     create_draft_board(c.DRAFT_BOARD_QUERY, engine)
-    engine.execute(c.CREATE_DRAFTED_PLAYERS)
 
 
 if __name__ == "__main__":

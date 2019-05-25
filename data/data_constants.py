@@ -1,5 +1,6 @@
 PARTIAL_PATH = "/Users/mengeling/Documents/fantasy_football/fantasy-football-draft-board/"
 IMG_PATH = PARTIAL_PATH + "app/static/img/"
+MISSING_PHOTO_PATH = PARTIAL_PATH + "app/static/img/missing_photo.jpg"
 DATA_PATH = PARTIAL_PATH + "/data/{}.csv"
 
 BASE_URL = "https://www.fantasypros.com"
@@ -10,7 +11,7 @@ LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fan
 
 DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
 
-BIO_HEADERS = ["id", "height", "weight", "age", "college"]
+BIO_HEADERS = ["id", "photo", "height", "weight", "age", "college"]
 RANKINGS_HEADERS = [
     "id",
     "rank",
@@ -190,6 +191,7 @@ DRAFT_BOARD_QUERY = """
         r.avg_ranking,
         r.std_dev_ranking,
         r.avg_draft_pick,
+        b.photo,
         b.height,
         b.weight,
         b.age,
@@ -236,16 +238,12 @@ DRAFT_BOARD_QUERY = """
         s.special_teams_td,
         s.games,
         s.fantasy_pts,
-        s.fantasy_pts_per_game
+        s.fantasy_pts_per_game,
+        0 drafted
     FROM rankings r
     LEFT JOIN stats_all s
     ON r.id = s.id
     LEFT JOIN bios b
     ON r.id = b.id
     ORDER BY r.rank
-"""
-
-CREATE_DRAFTED_PLAYERS = """
-    DROP TABLE IF EXISTS drafted_players;
-    CREATE TABLE drafted_players (LIKE draft_board);
 """

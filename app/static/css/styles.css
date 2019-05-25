@@ -27,7 +27,9 @@ tr:hover {
   background-color: #ADD8E6;
 }
 
-.draft-button {
+#draft-undraft-button,
+.available-button,
+.drafted-button {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;

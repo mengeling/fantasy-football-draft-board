@@ -19,26 +19,41 @@
         </header>
         <main>
             <div class="player-details">
-                <img class="player-pic" id="{{ player_id }}" src="/static/img/{{ player_id }}.jpg">
+                <img class="player-pic" id="{{ player_id }}" src="/static/img/{{ player_id }}.jpg" onerror="this.src='/static/img/missing_photo.jpg'">
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
-                <button type="button" class="draft-button">Draft Selected Player</button>
+                <button type="button" id="draft-undraft-button" class=0>Draft Selected Player</button>
             </div>
-            <div class="position-player-search">
-                <select class="position-dropdown">
-                    <option value="ALL">ALL</option>
-                    <option value="QB">QB</option>
-                    <option value="RB">RB</option>
-                    <option value="WR">WR</option>
-                    <option value="TE">TE</option>
-                    <option value="K">K</option>
-                    <option value="DST">DST</option>
-                </select>
-                <input type="search" placeholder="Player Search" class="search">
-            </div>
-            <div class="draft-board">
-                {{ board | safe }}
+            <div class="board-container">
+                <div class="available-drafted-container">
+                    <button type="button" class="available-button">Available Players</button>
+                    <button type="button"  class="drafted-button">Drafted Players</button>
+                </div>
+                <div class="position-team-player-search">
+                    <p>Position:</p>
+                    <select class="position-dropdown">
+                        <option selected value="ALL">ALL</option>
+                        <option value="QB">QB</option>
+                        <option value="RB">RB</option>
+                        <option value="WR">WR</option>
+                        <option value="TE">TE</option>
+                        <option value="K">K</option>
+                        <option value="DST">DST</option>
+                    </select>
+                    <p>Team:</p>
+                    <select class="team-dropdown">
+                        <option selected value="ALL">ALL</option>
+                        {% for team in teams %}
+                            <option value="{{ team }}">{{ team }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="search" placeholder="Player Search" class="search">
+                    <button type="button"  class="clear-search-button">Clear Search</button>
+                </div>
+                <div class="draft-board">
+                    {{ board | safe }}
+                </div>
             </div>
         </main>
         <footer>
