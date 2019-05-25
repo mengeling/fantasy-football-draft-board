@@ -54,7 +54,10 @@ $( "button.draft-button" ).on("click", function () {
 
 
 $( "input.update-rankings-button" ).on("click", function () {
-  if (!confirm('Download updated rankings?')) return false;
+  var message = "Download latest " +
+      $(".scoring-options option:selected").attr("id") +
+      " rankings? It may take up to 10 minutes."
+  if (!confirm(message)) return false;
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/get-data/",

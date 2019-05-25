@@ -2,8 +2,6 @@ import requests
 import os
 import sys
 import re
-import time
-import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
@@ -56,8 +54,8 @@ def load_data(df, table_name, engine):
     """
 
     # Write df to CSV, load it again to infer data types, and write it to table
-    df.to_csv(table_name + ".csv", index=False)
-    df = pd.read_csv(table_name + ".csv")
+    df.to_csv(c.DATA_PATH.format(table_name), index=False)
+    df = pd.read_csv(c.DATA_PATH.format(table_name))
     df.to_sql(table_name, con=engine, if_exists="replace", index=False)
 
 
@@ -227,17 +225,18 @@ def scrape_bios(df, headers, engine):
             html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
             img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
-        # Retrieve and dump photo and then wait a second or two
+        # Retrieve and save photo
         download_photo(img_url, c.IMG_PATH + row["id"] + ".jpg")
     df = pd.DataFrame(rows, columns=headers)
     load_data(df, "bios", engine)
 
 
-def get_data(scoring_option="standard"):
+def get_data(scoring_option):
     """
     Scrape data from fantasy pros and load it into DB
     """
 
+    # Based on the scoring option, get the fantasy pros URLs to the rankings and stats pages
     if scoring_option == "standard":
         rankings_url = c.RANKINGS_URL.format("consensus")
         stats_url = c.STATS_URL

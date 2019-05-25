@@ -10,9 +10,9 @@
         <header>
             <div class="update-data">
                 <select class="scoring-options">
-                    <option value="standard">Standard</option>
-                    <option value="half">Half PPR</option>
-                    <option value="ppr">Full PPR</option>
+                    <option value="standard" id="standard">Standard</option>
+                    <option value="half" id="half PPR">Half PPR</option>
+                    <option value="ppr" id="full PPR">Full PPR</option>
                 </select>
                 <input type="submit" value="Update Rankings" class="update-rankings-button">
             </div>
@@ -23,7 +23,7 @@
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
-                <button type="button" class="draft-button">DRAFT PLAYER</button>
+                <button type="button" class="draft-button">Draft Selected Player</button>
             </div>
             <div class="position-player-search">
                 <select class="position-dropdown">

@@ -1,4 +1,6 @@
-IMG_PATH = "../app/static/img/"
+PARTIAL_PATH = "/Users/mengeling/Documents/fantasy_football/fantasy-football-draft-board/"
+IMG_PATH = PARTIAL_PATH + "app/static/img/"
+DATA_PATH = PARTIAL_PATH + "/data/{}.csv"
 
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php?filters=f3bc15d83d"

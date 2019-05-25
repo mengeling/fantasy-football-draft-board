@@ -24,7 +24,7 @@ def get_top_player_board():
     player_id = df_player["id"][0]
 
     # Convert draft board and player details to HTML
-    board = df[c.BOARD_HEADERS].rename(c.RENAMED_BOARD_HEADERS, index=str).to_html(index=False, escape=False)
+    board = df[c.BOARD_HEADERS].rename(columns=c.RENAMED_BOARD_HEADERS, index=str).to_html(index=False, escape=False)
     player_details = df_player.to_html(index=False, escape=False)
     return board, player_details, player_id
 
