@@ -65,3 +65,40 @@ Q_NAME_POS_TEAM = """
     AND team = '{}'
     ORDER BY rank
 """
+
+TEAMS = [
+    'ARI',
+     'ATL',
+     'BAL',
+     'BUF',
+     'CAR',
+     'CHI',
+     'CIN',
+     'CLE',
+     'DAL',
+     'DEN',
+     'DET',
+     'FA',
+     'GB',
+     'HOU',
+     'IND',
+     'JAC',
+     'KC',
+     'LAC',
+     'LAR',
+     'MIA',
+     'MIN',
+     'NE',
+     'NO',
+     'NYG',
+     'NYJ',
+     'OAK',
+     'PHI',
+     'PIT',
+     'SEA',
+     'SF',
+     'TB',
+     'TEN',
+     'WAS'
+]
+

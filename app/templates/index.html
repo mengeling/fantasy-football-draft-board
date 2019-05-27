@@ -9,12 +9,21 @@
 	<body>
         <header>
             <div class="update-data">
-                <select class="scoring-options">
-                    <option value="standard" id="standard">Standard</option>
-                    <option value="half" id="half PPR">Half PPR</option>
-                    <option value="ppr" id="full PPR">Full PPR</option>
-                </select>
-                <input type="submit" value="Update Rankings" class="update-rankings-button">
+                <button type="button" class="update-rankings-button">Update Rankings</button>
+                <div class="popup-background">
+                    <span class="background-helper"></span>
+                    <div class="popup-content">
+                        <p>Choose your league's scoring type to get the latest rankings.
+                        <br/>It may take up to 10 minutes.</p>
+                        <button class="scoring-standard-button" value="standard">Standard</button>
+                        <button class="scoring-half-button" value="half">Half PPR</button>
+                        <button class="scoring-full-button" value="ppr">Full PPR</button>
+                        <button class="popup-cancel-button">Cancel</button>
+                    </div>
+                </div>
+                <div class="loader">
+                    <img class="loader-image" src="/static/img/ajax-loader.gif" alt="Loading..." />
+                </div>
             </div>
         </header>
         <main>
@@ -23,7 +32,7 @@
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
-                <button type="button" id="draft-undraft-button" class=0>Draft Selected Player</button>
+                <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
             </div>
             <div class="board-container">
                 <div class="available-drafted-container">
@@ -48,7 +57,7 @@
                             <option value="{{ team }}">{{ team }}</option>
                         {% endfor %}
                     </select>
-                    <input type="search" placeholder="Player Search" class="search">
+                    <input type="search" placeholder="Player Search" class="player-search">
                     <button type="button"  class="clear-search-button">Clear Search</button>
                 </div>
                 <div class="draft-board">

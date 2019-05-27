@@ -22,12 +22,17 @@ def select_top_player_board(drafted=0):
     :return: teams, list of NFL teams
     """
 
-    # Get relevant draft board and if it doesn't have any rows, leave everything null
-    df = pd.read_sql_query(c.Q_ALL.format(drafted), con=engine)
+    # Try to get drafted or available draft board and if it fails create empty df
+    try:
+        df = pd.read_sql_query(c.Q_ALL.format(drafted), con=engine)
+    except:
+        df = pd.DataFrame(columns=c.BOARD_HEADERS)
+
+    # If df doesn't have any rows, create placeholder values
     if df.shape[0] == 0:
         df_player = df
         player_id = None
-        teams = None
+        teams = c.TEAMS
 
     # Otherwise get top ranked player's ID and stats from min rank and get all teams
     else:

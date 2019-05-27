@@ -1,7 +1,7 @@
 function clear_search() {
-  $("input.search").val("");
-  $("select.position-dropdown").val("ALL");
-  $("select.team-dropdown").val("ALL");
+  $(".player-search").val("");
+  $(".position-dropdown").val("ALL");
+  $(".team-dropdown").val("ALL");
 }
 
 
@@ -29,7 +29,7 @@ function get_board_subset() {
     data: { drafted: $("#draft-undraft-button").attr("class"),
             position: $(".position-dropdown  option:selected").val(),
             team: $(".team-dropdown  option:selected").val(),
-            name: $("input.search").val() },
+            name: $(".player-search").val() },
     success: function(data) {
       $(".draft-board").html(data.board);
     }
@@ -37,17 +37,17 @@ function get_board_subset() {
 }
 
 
-$( "select.position-dropdown, select.team-dropdown" ).change(function () {
+$(".position-dropdown, select.team-dropdown").change(function() {
   get_board_subset();
 })
 
 
-$( "input.search" ).on("input", function () {
+$(".player-search").on("input", function() {
   get_board_subset();
 })
 
 
-$( "button.available-button" ).on("click", function () {
+$(".available-button").on("click", function() {
   $("#draft-undraft-button").attr("class", "0");
   $("#draft-undraft-button").text("Draft Selected Player");
   clear_search()
@@ -55,7 +55,7 @@ $( "button.available-button" ).on("click", function () {
 })
 
 
-$( "button.drafted-button" ).on("click", function () {
+$(".drafted-button").on("click", function() {
   $("#draft-undraft-button").attr("class", "1");
   $("#draft-undraft-button").text("Undraft Selected Player");
   clear_search()
@@ -63,13 +63,13 @@ $( "button.drafted-button" ).on("click", function () {
 })
 
 
-$( "button.clear-search-button" ).on("click", function () {
+$(".clear-search-button").on("click", function() {
   clear_search();
   get_board_subset()
 })
 
 
-$( "div.draft-board" ).on("click", "tr", function () {
+$(".draft-board").on("click", "tr", function() {
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/player-details/",
@@ -84,7 +84,7 @@ $( "div.draft-board" ).on("click", "tr", function () {
 })
 
 
-$( "button#draft-undraft-button" ).on("click", function () {
+$("#draft-undraft-button").on("click", function() {
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/draft-undraft-player/",
@@ -102,17 +102,36 @@ $( "button#draft-undraft-button" ).on("click", function () {
 })
 
 
-$( "input.update-rankings-button" ).on("click", function () {
-  var message = "Download latest " +
-      $(".scoring-options option:selected").attr("id") +
-      " rankings? It may take up to 10 minutes."
-  if (!confirm(message)) return false;
+$(".update-rankings-button").on("click", function() {
+  $(".popup-background").show();
+});
+
+
+$(".popup-background").on("click", function(e) {
+  if( $(e.target).closest(".popup-content").length > 0 ) {
+    return
+  }
+  $(".popup-background").hide();
+});
+
+
+$(".popup-cancel-button").on("click", function(e) {
+  $(".popup-background").hide();
+});
+
+
+$(".scoring-standard-button, .scoring-half-button, .scoring-full-button").on("click", function() {
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/update-data/",
     contentType: "application/json; charset=utf-8",
-    data: { scoring_option: $(".scoring-options option:selected").val() },
+    data: { scoring_option: $(this).val() },
+    beforeSend: function() {
+        $(".loader").show();
+    },
     success: function(data) {
+      $(".loader").hide();
+      $(".popup-background").hide();
       $("#draft-undraft-button").attr("class", "0");
       $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
       $(".player-pic").attr("id", data.player_id);
@@ -121,4 +140,5 @@ $( "input.update-rankings-button" ).on("click", function () {
     }
   });
   clear_search();
+
 })

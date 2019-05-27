@@ -217,7 +217,7 @@ def scrape_bios(df, headers, engine):
         player_image = html.find("img", class_="hidden-phone")
         if player_image:
             img_url = "https:" + player_image["src"]
-            img_path =  c.IMG_PATH + row["id"] + ".jpg"
+            img_path = c.IMG_PATH + row["id"] + ".jpg"
             row_data = download_photo(row_data,  img_url, img_path)
 
             # Get bio details in the clearfix div
@@ -228,7 +228,7 @@ def scrape_bios(df, headers, engine):
             bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
             # Loop through bio details columns. Add value from dict if available and null otherwise
-            for header in headers[1:]:
+            for header in headers[2:]:
                 if header.title() in bio_details_dict.keys():
                     row_data.append(bio_details_dict[header.title()])
                 else:
