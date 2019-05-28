@@ -49,8 +49,17 @@ def create_draft_board(engine, df_rankings, df_stats):
 
     # Create drafted column with zeros (draft hasn't started) and combine name, team, and position into player
     df["drafted"] = np.zeros(df.shape[0])
-    df["player"] = "<span class='fake-link' id='" + df["id"].astype(str) + "'>" + df["name"] \
-                   + ", " + df["team"] + ", " + df["position"] + "</span>"
+    df["player"] = (
+        "<span class='fake-link' id='"
+        + df["id"].astype(str)
+        + "'>"
+        + df["name"]
+        + ", "
+        + df["team"]
+        + ", "
+        + df["position"]
+        + "</span>"
+    )
 
     # Create draft board table and then load the dataframe into it
     engine.execute(c.CREATE_DRAFT_BOARD)

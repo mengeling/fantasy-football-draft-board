@@ -57,7 +57,9 @@ def index():
 
     # Get top available player, draft board, and render them
     board, player_details, player_id, img_url, teams = select_top_player_board()
-    return render_template("index.html", board=board, player_details=player_details, player_id=player_id, img_url=img_url, teams=teams)
+    return render_template(
+        "index.html", board=board, player_details=player_details, player_id=player_id, img_url=img_url, teams=teams
+    )
 
 
 @app.route("/player-details/", methods=["GET"])
@@ -83,7 +85,9 @@ def get_player_full_board():
     # Use drafted value to get top player, draft board, and pass them back as JSON
     drafted = int(request.args.get("drafted"))
     board, player_details, player_id, img_url, teams = select_top_player_board(drafted)
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
+    return jsonify(
+        {"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams}
+    )
 
 
 @app.route("/get-board-subset/", methods=["GET"])
@@ -127,7 +131,9 @@ def draft_undraft_player():
 
     # Retrieve top player, updated draft board, and pass them back as JSON
     board, player_details, player_id, img_url, teams = select_top_player_board(drafted)
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
+    return jsonify(
+        {"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams}
+    )
 
 
 @app.route("/update-data/", methods=["GET"])
@@ -142,7 +148,9 @@ def update_data():
 
     # Retrieve top player, updated draft board, and pass them back as JSON
     board, player_details, player_id, img_url, teams = select_top_player_board()
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
+    return jsonify(
+        {"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams}
+    )
 
 
 if __name__ == "__main__":

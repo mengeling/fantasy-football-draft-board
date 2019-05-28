@@ -25,7 +25,7 @@ RANKINGS_HEADERS = [
     "height",
     "weight",
     "age",
-    "college"
+    "college",
 ]
 STATS_HEADERS = {
     "qb": [
