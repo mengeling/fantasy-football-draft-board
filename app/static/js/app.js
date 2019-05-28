@@ -12,7 +12,7 @@ function get_player_full_board() {
     contentType: "application/json; charset=utf-8",
     data: { drafted: $("#draft-undraft-button").attr("class") },
     success: function(data) {
-      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
       $(".player-stats").html(data.player_details);
       $(".draft-board").html(data.board);
@@ -76,7 +76,7 @@ $(".draft-board").on("click", "tr", function() {
     contentType: "application/json; charset=utf-8",
     data: { player_id: $(this).find("td > span").attr("id") },
     success: function(data) {
-      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
       $(".player-stats").html(data.player_details);
     }
@@ -92,7 +92,7 @@ $("#draft-undraft-button").on("click", function() {
     data: { drafted: $("#draft-undraft-button").attr("class"),
             player_id: $(".player-pic").attr("id") },
     success: function(data) {
-      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
       $(".player-stats").html(data.player_details);
       $(".draft-board").html(data.board);
@@ -133,7 +133,7 @@ $(".scoring-standard-button, .scoring-half-button, .scoring-full-button").on("cl
       $(".loader").hide();
       $(".popup-background").hide();
       $("#draft-undraft-button").attr("class", "0");
-      $(".player-pic").attr("src", "/static/img/" + data.player_id + ".jpg");
+      $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
       $(".player-stats").html(data.player_details);
       $(".draft-board").html(data.board);

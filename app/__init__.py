@@ -32,19 +32,21 @@ def select_top_player_board(drafted=0):
     if df.shape[0] == 0:
         df_player = df
         player_id = None
+        img_url = "None"
         teams = c.TEAMS
 
     # Otherwise get top ranked player's ID and stats from min rank and get all teams
     else:
         df_player = df.iloc[[df["rank"].idxmin()]]
         player_id = int(df_player["id"][0])
+        img_url = df_player["img_url"][0]
         teams = sorted(df["team"].unique())
 
     # Convert draft board and player details to HTML
     board = df[c.BOARD_HEADERS].rename(columns=c.RENAMED_BOARD_HEADERS, index=str)
     board = board.to_html(index=False, escape=False)
     player_details = df_player.to_html(index=False, escape=False)
-    return board, player_details, player_id, teams
+    return board, player_details, player_id, img_url, teams
 
 
 @app.route("/", methods=["GET"])
@@ -54,8 +56,8 @@ def index():
     """
 
     # Get top available player, draft board, and render them
-    board, player_details, player_id, teams = select_top_player_board()
-    return render_template("index.html", board=board, player_details=player_details, player_id=player_id, teams=teams)
+    board, player_details, player_id, img_url, teams = select_top_player_board()
+    return render_template("index.html", board=board, player_details=player_details, player_id=player_id, img_url=img_url, teams=teams)
 
 
 @app.route("/player-details/", methods=["GET"])
@@ -67,8 +69,9 @@ def get_player_details():
     # Retrieve player ID and player details
     player_id = int(request.args.get("player_id"))
     df_player = pd.read_sql_query(c.Q_ID.format(player_id), con=engine)
+    img_url = df_player["img_url"][0]
     player_details = df_player.to_html(index=False, escape=False)
-    return jsonify({"player_details": player_details, "player_id": player_id})
+    return jsonify({"player_details": player_details, "player_id": player_id, "img_url": img_url})
 
 
 @app.route("/get-player-full-board/", methods=["GET"])
@@ -79,8 +82,8 @@ def get_player_full_board():
 
     # Use drafted value to get top player, draft board, and pass them back as JSON
     drafted = int(request.args.get("drafted"))
-    board, player_details, player_id, teams = select_top_player_board(drafted)
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "teams": teams})
+    board, player_details, player_id, img_url, teams = select_top_player_board(drafted)
+    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
 
 
 @app.route("/get-board-subset/", methods=["GET"])
@@ -123,8 +126,8 @@ def draft_undraft_player():
     engine.execute(c.UPDATE_BOARD.format(updated_drafted, player_id))
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    board, player_details, player_id, teams = select_top_player_board(drafted)
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "teams": teams})
+    board, player_details, player_id, img_url, teams = select_top_player_board(drafted)
+    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
 
 
 @app.route("/update-data/", methods=["GET"])
@@ -138,8 +141,8 @@ def update_data():
     g.get_data(scoring_option)
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    board, player_details, player_id, teams = select_top_player_board()
-    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "teams": teams})
+    board, player_details, player_id, img_url, teams = select_top_player_board()
+    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url, "teams": teams})
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@
                     <span class="background-helper"></span>
                     <div class="popup-content">
                         <p>Choose your league's scoring settings below.
-                        <br/>It will take about 10 minutes to download everything.</p>
+                        <br/>It will take about 5 minutes to download everything.</p>
                         <button class="scoring-standard-button" value="standard">Standard</button>
                         <button class="scoring-half-button" value="half">Half PPR</button>
                         <button class="scoring-full-button" value="ppr">Full PPR</button>
@@ -28,7 +28,7 @@
         </header>
         <main>
             <div class="player-details">
-                <img class="player-pic" id="{{ player_id }}" src="/static/img/{{ player_id }}.jpg" onerror="this.src='/static/img/missing_photo.jpg'">
+                <img class="player-pic" id="{{ player_id }}" src="{{ img_url }}" onerror="this.src='https://images.fantasypros.com/images/photo_missing_square.jpg'">
                 <div class="player-stats">
                     {{ player_details | safe }}
                 </div>
