@@ -48,28 +48,15 @@ def select_top_player_board(username, drafted=0):
 
 
 @app.route("/", methods=["GET"])
-def login():
+def index():
     """
-    Renders login.html template with draft board table and top available player highlighted
-    """
-
-    # Get top available player, draft board, and render them
-    return render_template("login.html")
-
-
-@app.route("/draft-board/<username>", methods=["GET"])
-def draft_board(username):
-    """
-    Renders login.html template with draft board table and top available player highlighted
-
-    :param username: String, username used to select the draft board table
+    Renders index.html template with placeholder values until data is retrieved
     """
 
-    # Get top available player, draft board, and render them
-    board, player_details, player_id, img_url = select_top_player_board(username)
+    # Create placeholders
+    board, player_details, player_id, img_url = select_top_player_board(username="")
     return render_template(
-        "draft_board.html",
-        username=username,
+        "index.html",
         board=board,
         player_details=player_details,
         player_id=player_id,
@@ -89,7 +76,19 @@ def check_if_board_exists():
     return jsonify({"exists": int(exists), "username": username})
 
 
-@app.route("/player-details/", methods=["GET"])
+@app.route("/get-data/", methods=["GET"])
+def get_data():
+    """
+    Add draft board table and top available player to index.html
+    """
+
+    # Get top available player, draft board, and render them
+    username = request.args.get("username")
+    board, player_details, player_id, img_url = select_top_player_board(username)
+    return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url})
+
+
+@app.route("/get-player-details/", methods=["GET"])
 def get_player_details():
     """
     Update player picture and details with the selected player
@@ -104,8 +103,8 @@ def get_player_details():
     return jsonify({"player_details": player_details, "player_id": player_id, "img_url": img_url})
 
 
-@app.route("/get-player-full-board/", methods=["GET"])
-def get_player_full_board():
+@app.route("/get-drafted-board/", methods=["GET"])
+def get_drafted_board():
     """
     Select top ranked player and draft board based on drafted value
     """
@@ -163,10 +162,10 @@ def draft_undraft_player():
     return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url})
 
 
-@app.route("/update-data/", methods=["GET"])
-def update_data():
+@app.route("/download-data/", methods=["GET"])
+def download_data():
     """
-    Update data from fantasy pros, load it into DB, and then render it
+    Scrape data from fantasy pros, load it into DB, and then retrieve data
     """
 
     # Get username and scoring and use them to download updated rankings
@@ -177,19 +176,6 @@ def update_data():
     # Retrieve top player, updated draft board, and pass them back as JSON
     board, player_details, player_id, img_url = select_top_player_board(username)
     return jsonify({"board": board, "player_details": player_details, "player_id": player_id, "img_url": img_url})
-
-
-@app.route("/get-data/", methods=["GET"])
-def get_data():
-    """
-    Scrape data from fantasy pros for first time, load it into DB, and then render it
-    """
-
-    # Get username and scoring, use them to download rankings, and pass username back
-    username = request.args.get("username")
-    scoring_option = request.args.get("scoring_option")
-    g.get_data(username, scoring_option)
-    return jsonify({"username": username})
 
 
 if __name__ == "__main__":

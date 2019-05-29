@@ -8,8 +8,27 @@
 	</head>
 	<body class="{{ username }}">
         <header>
+            <div class="login-background">
+                <span class="login-helper"></span>
+                <div class="login-content">
+                    <p>Enter Your Full Name</p>
+                    <input type="search" placeholder="First and Last Name" class="username-input">
+                    <button type="button"  class="login-button">View My Draft Board</button>
+                </div>
+            </div>
+            <div class="download-background">
+                <span class="download-helper"></span>
+                <div class="download-content">
+                    <p>No draft boards exist under that name.</br>
+                        Choose a scoring option to create a board under that name.</p>
+                    <button class="login-scoring-button" value="standard">Standard</button>
+                    <button class="login-scoring-button" value="half">Half PPR</button>
+                    <button class="login-scoring-button" value="ppr">Full PPR</button>
+                    <button class="login-cancel-button">Cancel</button>
+                </div>
+            </div>
             <div>
-                <a class="back-login" href="{{ url_for('login') }}">Back</a>
+                <button class="back-login-button">Back</button>
             </div>
             <div class="update-data">
                 <button type="button" class="update-rankings-button">Update Rankings</button>

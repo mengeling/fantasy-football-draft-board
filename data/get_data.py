@@ -240,6 +240,6 @@ def get_data(username, scoring_option):
 
 if __name__ == "__main__":
 
-    # If executed as script pass scoring option argument into get_data function
+    # If executed as script pass username and scoring option into get_data function
     username, scoring_option = sys.argv[1:3]
     get_data(username, scoring_option)

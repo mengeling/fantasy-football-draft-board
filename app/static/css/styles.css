@@ -1,3 +1,4 @@
+/* Start general formatting */
 body {
   text-align: center;
   display: block;
@@ -9,7 +10,10 @@ body {
 button {
   cursor: pointer;
 }
+/* End general formatting */
 
+
+/* Start formatting for pop-ups and loading GIF */
 .login-background {
     background: rgba(0,0,0,.4);
     display: block;
@@ -72,7 +76,10 @@ button {
   height: 40%;
   padding-top: 5%;
 }
+/* End formatting for pop-ups and loading GIF */
 
+
+/* Start formatting for player details and draft board */
 .player-details {
     width: 90%;
     font-size: 0.7em;
@@ -100,3 +107,4 @@ tr:hover {
   padding: 10px;
   border-radius: 5px;
 }
+/* End formatting for player details and draft board */
