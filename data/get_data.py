@@ -1,5 +1,4 @@
 import requests
-import os
 import sys
 import re
 import numpy as np
@@ -8,24 +7,6 @@ from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 
 import data_constants as c
-
-
-def login_fpros(url, user, pswd):
-    """
-    Use username and password to log into fantasy pros
-
-    :param url: String, URL to the login page
-    :param user: String, fantasy pros username
-    :param pswd: String, fantasy pros password
-    :return: Object, logged in request session
-    """
-
-    session = requests.session()
-    html = BeautifulSoup(session.get(url).text, "html.parser")
-    token = html.find("input", {"name": "csrfmiddlewaretoken"}).attrs.get("value")
-    payload = {"username": user, "password": pswd, "csrfmiddlewaretoken": token}
-    session.post(url, data=payload, headers=dict(referer=url))
-    return session
 
 
 def create_draft_board(engine, df_rankings, df_stats):
@@ -128,11 +109,12 @@ def scrape_stats(url, headers_dict, stats_all_headers):
     return create_stats_all(dict_stats, stats_all_headers)
 
 
-def scrape_bio(row_data):
+def scrape_bio(row_data, bio_headers):
     """
     Go to player's page to get their picture and bio
 
     :param row_data: List, player IDs and rankings
+    :param bio_headers: List, column headers for bio data
     :return: row_data list with new bio columns
     """
 
@@ -154,7 +136,7 @@ def scrape_bio(row_data):
         bio_details_dict = {detail.text.split(": ")[0]: detail.text.split(": ")[1] for detail in bio_details}
 
         # Loop through bio details columns after ID and photo_url. Add dict value if available or null otherwise
-        for header in c.BIO_HEADERS:
+        for header in bio_headers:
             if header in bio_details_dict.keys():
                 row_data.append(bio_details_dict[header])
             else:
@@ -172,11 +154,10 @@ def scrape_bio(row_data):
     return row_data
 
 
-def scrape_rankings(session, url, ranking_headers, bio_headers):
+def scrape_rankings(url, ranking_headers, bio_headers):
     """
     Get fantasy rankings using the URL provided
 
-    :param session: Object, logged in request session
     :param url: String, URL for the rankings
     :param ranking_headers: List, column headers for ranking data
     :param bio_headers: List, column headers for bio data
@@ -184,7 +165,7 @@ def scrape_rankings(session, url, ranking_headers, bio_headers):
     """
 
     # Use beautiful soup to retrieve HTML table with rankings
-    html = BeautifulSoup(session.get(url).text, "html.parser")
+    html = BeautifulSoup(requests.get(url).text, "html.parser")
     table = html.find("table", id="rank-data").find_all("tbody")[0]
 
     # Iterate through the rows (tr) in the table
@@ -223,7 +204,7 @@ def scrape_rankings(session, url, ranking_headers, bio_headers):
                     row_data.append(td.text)
 
             # Use scrape_bio function to append player photo URL and bio details to list
-            row_data = scrape_bio(row_data)
+            row_data = scrape_bio(row_data, bio_headers)
             rows.append(row_data)
     return pd.DataFrame(rows, columns=ranking_headers)
 
@@ -246,15 +227,12 @@ def get_data(scoring_option):
         rankings_url = c.RANKINGS_URL.format("half-point-ppr")
         stats_url = c.STATS_URL + "?scoring=HALF"
 
-    # Create session that's logged into fantasy pros and create DB engine object
-    session = login_fpros(c.LOGIN_URL, os.environ["FPROS_USER"], os.environ["FPROS_PSWD"])
-    engine = create_engine(c.DB_ENGINE)
-
     # Scrape rankings and stats
-    df_rankings = scrape_rankings(session, rankings_url, c.RANKINGS_HEADERS, c.BIO_HEADERS)
+    df_rankings = scrape_rankings(rankings_url, c.RANKINGS_HEADERS, c.BIO_HEADERS)
     df_stats = scrape_stats(stats_url, c.STATS_HEADERS, c.STATS_ALL_HEADERS)
 
-    # Combine rankings, bios, and stats in draft board and write it to DB
+    # Create DB connection and then write combined rankings, bios, and stats to DB
+    engine = create_engine(c.DB_ENGINE)
     create_draft_board(engine, df_rankings, df_stats)
 
 

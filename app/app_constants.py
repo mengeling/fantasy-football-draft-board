@@ -1,6 +1,6 @@
-IMG_PATH = "../app/static/img/"
-
 DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
+
+MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
 
 BOARD_HEADERS = [
     "rank",
@@ -25,7 +25,6 @@ BOARD_HEADERS = [
     "rec_yds",
     "rec_td",
 ]
-
 RENAMED_BOARD_HEADERS = {
     "rank": "RANK",
     "player": "PLAYER",
@@ -65,39 +64,3 @@ Q_NAME_POS_TEAM = """
     AND team = '{}'
     ORDER BY rank
 """
-
-TEAMS = [
-    "ARI",
-    "ATL",
-    "BAL",
-    "BUF",
-    "CAR",
-    "CHI",
-    "CIN",
-    "CLE",
-    "DAL",
-    "DEN",
-    "DET",
-    "FA",
-    "GB",
-    "HOU",
-    "IND",
-    "JAC",
-    "KC",
-    "LAC",
-    "LAR",
-    "MIA",
-    "MIN",
-    "NE",
-    "NO",
-    "NYG",
-    "NYJ",
-    "OAK",
-    "PHI",
-    "PIT",
-    "SEA",
-    "SF",
-    "TB",
-    "TEN",
-    "WAS",
-]

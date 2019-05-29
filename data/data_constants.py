@@ -1,7 +1,7 @@
 DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
 
 BASE_URL = "https://www.fantasypros.com"
-RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php?filters=f3bc15d83d"
+RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php"
 STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fantasypros.com/"
 
@@ -26,6 +26,7 @@ RANKINGS_HEADERS = [
     "weight",
     "age",
     "college",
+    
 ]
 STATS_HEADERS = {
     "qb": [
