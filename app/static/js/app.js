@@ -10,7 +10,8 @@ function get_player_full_board() {
     type: "GET",
     url: $SCRIPT_ROOT + "/get-player-full-board/",
     contentType: "application/json; charset=utf-8",
-    data: { drafted: $("#draft-undraft-button").attr("class") },
+    data: { username: $("body").attr("class"),
+            drafted: $("#draft-undraft-button").attr("class") },
     success: function(data) {
       $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
@@ -26,7 +27,8 @@ function get_board_subset() {
     type: "GET",
     url: $SCRIPT_ROOT + "/get-board-subset/",
     contentType: "application/json; charset=utf-8",
-    data: { drafted: $("#draft-undraft-button").attr("class"),
+    data: { username: $("body").attr("class"),
+            drafted: $("#draft-undraft-button").attr("class"),
             position: $(".position-dropdown  option:selected").val(),
             team: $(".team-dropdown  option:selected").val(),
             name: $(".player-search").val() },
@@ -74,7 +76,8 @@ $(".draft-board").on("click", "tr", function() {
     type: "GET",
     url: $SCRIPT_ROOT + "/player-details/",
     contentType: "application/json; charset=utf-8",
-    data: { player_id: $(this).find("td > span").attr("id") },
+    data: { username: $("body").attr("class"),
+            player_id: $(this).find("td > span").attr("id") },
     success: function(data) {
       $(".player-pic").attr("src", data.img_url);
       $(".player-pic").attr("id", data.player_id);
@@ -89,7 +92,8 @@ $("#draft-undraft-button").on("click", function() {
     type: "GET",
     url: $SCRIPT_ROOT + "/draft-undraft-player/",
     contentType: "application/json; charset=utf-8",
-    data: { drafted: $("#draft-undraft-button").attr("class"),
+    data: { username: $("body").attr("class"),
+            drafted: $("#draft-undraft-button").attr("class"),
             player_id: $(".player-pic").attr("id") },
     success: function(data) {
       $(".player-pic").attr("src", data.img_url);
@@ -120,12 +124,13 @@ $(".popup-cancel-button").on("click", function(e) {
 });
 
 
-$(".scoring-standard-button, .scoring-half-button, .scoring-full-button").on("click", function() {
+$(".popup-scoring-button").on("click", function() {
   $.ajax({
     type: "GET",
     url: $SCRIPT_ROOT + "/update-data/",
     contentType: "application/json; charset=utf-8",
-    data: { scoring_option: $(this).val() },
+    data: { username: $("body").attr("class"),
+            scoring_option: $(this).val() },
     beforeSend: function() {
         $(".loader").show();
     },
@@ -140,5 +145,47 @@ $(".scoring-standard-button, .scoring-half-button, .scoring-full-button").on("cl
     }
   });
   clear_search();
-
 })
+
+
+$(".login-back-button").on("click", function(e) {
+  $(".login-background").show()
+  $(".download-background").hide()
+});
+
+
+$(".login-scoring-button").on("click", function() {
+  $.ajax({
+    type: "GET",
+    url: $SCRIPT_ROOT + "/get-data/",
+    contentType: "application/json; charset=utf-8",
+    data: { username: $("body").attr("class"),
+            scoring_option: $(this).val() },
+    beforeSend: function() {
+        $(".loader").show();
+    },
+    success: function(data) {
+      window.location.href = "/draft-board/" + data.username;
+    }
+  });
+})
+
+
+$(".login-button").on("click", function() {
+  $.ajax({
+    type: "GET",
+    url: $SCRIPT_ROOT + "/check-if-board-exists/",
+    contentType: "application/json; charset=utf-8",
+    data: { username: $(".username-input").val() },
+    success: function(data) {
+      if (data.exists == 1) {
+        window.location.href = "/draft-board/" + data.username;
+      }
+      else {
+        $("body").attr("class", data.username)
+        $(".login-background").hide()
+        $(".download-background").show()
+      }
+    }
+  });
+});

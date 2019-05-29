@@ -9,11 +9,12 @@ from sqlalchemy import create_engine
 import data_constants as c
 
 
-def create_draft_board(engine, df_rankings, df_stats):
+def create_draft_board(engine, username, df_rankings, df_stats):
     """
     Create draft board table by combining rankings, stats, and bios
 
     :param engine: Object, DB connection
+    :param username: String, username that's included in the table name
     :param df_rankings: Pandas dataframe, player rankings
     :param df_stats: Pandas dataframe, player stats
     """
@@ -43,8 +44,8 @@ def create_draft_board(engine, df_rankings, df_stats):
     )
 
     # Create draft board table and then load the dataframe into it
-    engine.execute(c.CREATE_DRAFT_BOARD)
-    df.to_sql("draft_board", con=engine, index=False, if_exists="append")
+    engine.execute(c.CREATE_DRAFT_BOARD.format(username, username))
+    df.to_sql("draft_board_" + username, con=engine, index=False, if_exists="append")
 
 
 def create_stats_all(dict_stats, headers):
@@ -209,10 +210,11 @@ def scrape_rankings(url, ranking_headers, bio_headers):
     return pd.DataFrame(rows, columns=ranking_headers)
 
 
-def get_data(scoring_option):
+def get_data(username, scoring_option):
     """
     Scrape data from fantasy pros and load it into DB
 
+    :param username: String, username that's included in the table name
     :param scoring_option: String, selected scoring option
     """
 
@@ -233,10 +235,11 @@ def get_data(scoring_option):
 
     # Create DB connection and then write combined rankings, bios, and stats to DB
     engine = create_engine(c.DB_ENGINE)
-    create_draft_board(engine, df_rankings, df_stats)
+    create_draft_board(engine, username, df_rankings, df_stats)
 
 
 if __name__ == "__main__":
 
     # If executed as script pass scoring option argument into get_data function
-    get_data(sys.argv[1])
+    username, scoring_option = sys.argv[1:3]
+    get_data(username, scoring_option)

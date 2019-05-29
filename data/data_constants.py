@@ -178,8 +178,8 @@ STATS_ALL_HEADERS = [
 ]
 
 CREATE_DRAFT_BOARD = """
-DROP TABLE IF EXISTS draft_board;
-CREATE TABLE draft_board (
+DROP TABLE IF EXISTS draft_board_{};
+CREATE TABLE draft_board_{} (
 
     id                   INT,
     rank                 INT,

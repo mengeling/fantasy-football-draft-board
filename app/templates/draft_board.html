@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Data Refresh Page</title>
+		<title>Fantasy Football Draft Board</title>
 		<meta charset="utf-8">
 	  	<meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 	</head>
-	<body>
+	<body class="{{ username }}">
         <header>
-            <div class="login-background">
-                <span class="login-helper"></span>
-                <div class="login-content">
-                    <p>Enter Your Full Name</p>
-                    <input type="search" placeholder="First and Last Name" class="username">
-                    <button type="button"  class="login-button">View My Draft Board</button>
-                </div>
+            <div>
+                <a class="back-login" href="{{ url_for('login') }}">Back</a>
             </div>
             <div class="update-data">
                 <button type="button" class="update-rankings-button">Update Rankings</button>
@@ -23,9 +18,9 @@
                     <div class="popup-content">
                         <p>Choose your league's scoring settings below.
                         <br/>It will take about 5 minutes to download everything.</p>
-                        <button class="scoring-standard-button" value="standard">Standard</button>
-                        <button class="scoring-half-button" value="half">Half PPR</button>
-                        <button class="scoring-full-button" value="ppr">Full PPR</button>
+                        <button class="popup-scoring-button" value="standard">Standard</button>
+                        <button class="popup-scoring-button" value="half">Half PPR</button>
+                        <button class="popup-scoring-button" value="ppr">Full PPR</button>
                         <button class="popup-cancel-button">Cancel</button>
                     </div>
                 </div>

@@ -49,15 +49,22 @@ RENAMED_BOARD_HEADERS = {
     "rec_td": "RETD",
 }
 
-UPDATE_BOARD = "UPDATE draft_board SET drafted = {} WHERE id = {}"
-Q_ALL = "SELECT * FROM draft_board WHERE drafted = {} ORDER BY rank"
-Q_ID = "SELECT * FROM draft_board WHERE id = {}"
-Q_NAME = "SELECT * FROM draft_board WHERE drafted = {} AND name ILIKE '%{}%' ORDER BY rank"
-Q_NAME_POS = "SELECT * FROM draft_board WHERE drafted = {}  AND name ILIKE '%{}%' AND position = '{}' ORDER BY rank"
-Q_NAME_TEAM = "SELECT * FROM draft_board WHERE drafted = {} AND name ILIKE '%{}%' AND team = '{}' ORDER BY rank"
+CHECK_IF_BOARD_EXISTS = """
+SELECT EXISTS (
+    SELECT * 
+    FROM information_schema.tables 
+    WHERE table_name = 'draft_board_{}'
+)
+"""
+UPDATE_BOARD = "UPDATE draft_board_{} SET drafted = {} WHERE id = {}"
+Q_ALL = "SELECT * FROM draft_board_{} WHERE drafted = {} ORDER BY rank"
+Q_ID = "SELECT * FROM draft_board_{} WHERE id = {}"
+Q_NAME = "SELECT * FROM draft_board_{} WHERE drafted = {} AND name ILIKE '%{}%' ORDER BY rank"
+Q_NAME_POS = "SELECT * FROM draft_board_{} WHERE drafted = {}  AND name ILIKE '%{}%' AND position = '{}' ORDER BY rank"
+Q_NAME_TEAM = "SELECT * FROM draft_board_{} WHERE drafted = {} AND name ILIKE '%{}%' AND team = '{}' ORDER BY rank"
 Q_NAME_POS_TEAM = """
     SELECT *
-    FROM draft_board
+    FROM draft_board_{}
     WHERE drafted = {}
     AND name ILIKE '%{}%'
     AND position = '{}'

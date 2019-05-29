@@ -12,7 +12,7 @@ button {
 
 .login-background {
     background: rgba(0,0,0,.4);
-    display: none;
+    display: block;
     height: 100%;
     position: fixed;
     text-align: center;
@@ -20,26 +20,7 @@ button {
     width: 100%;
 }
 
-.login-background .login-helper {
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-}
-
-.login-content {
-    background-color: #fff;
-    box-shadow: 10px 10px 60px #555;
-    display: inline-block;
-    height: auto;
-    max-width: 400px;
-    min-height: 100px;
-    vertical-align: middle;
-    width: 60%;
-    position: relative;
-    border-radius: 8px;
-    padding: 15px 5%;
-}
-
+.download-background,
 .popup-background {
     background: rgba(0,0,0,.4);
     display: none;
@@ -50,18 +31,22 @@ button {
     width: 100%;
 }
 
+.login-background .login-helper,
+.download-background .download-helper,
 .popup-background .background-helper {
     display: inline-block;
     height: 100%;
     vertical-align: middle;
 }
 
+.login-content,
+.download-content,
 .popup-content {
     background-color: #fff;
     box-shadow: 10px 10px 60px #555;
     display: inline-block;
     height: auto;
-    max-width: 551px;
+    max-width: 400px;
     min-height: 100px;
     vertical-align: middle;
     width: 60%;
