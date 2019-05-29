@@ -68,8 +68,12 @@ def draft_board(username):
     # Get top available player, draft board, and render them
     board, player_details, player_id, img_url = select_top_player_board(username)
     return render_template(
-        "draft_board.html", username=username, board=board, player_details=player_details,
-        player_id=player_id, img_url=img_url,
+        "draft_board.html",
+        username=username,
+        board=board,
+        player_details=player_details,
+        player_id=player_id,
+        img_url=img_url,
     )
 
 

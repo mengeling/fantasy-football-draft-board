@@ -51,8 +51,8 @@ RENAMED_BOARD_HEADERS = {
 
 CHECK_IF_BOARD_EXISTS = """
 SELECT EXISTS (
-    SELECT * 
-    FROM information_schema.tables 
+    SELECT *
+    FROM information_schema.tables
     WHERE table_name = 'draft_board_{}'
 )
 """
