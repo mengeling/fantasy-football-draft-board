@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 	  	<meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+        <link rel="shortcut icon" type="image/gif" class="logo" href="/static/img/favicon.png">
 	</head>
 	<body class="{{ username }}">
         <header>
@@ -36,7 +37,7 @@
                     <span class="background-helper"></span>
                     <div class="popup-content">
                         <p>Choose your league's scoring settings below.
-                        <br/>It will take about 5 minutes to download everything.</p>
+                        <br/>It might take up to 10 minutes to download everything.</p>
                         <button class="popup-scoring-button" value="standard">Standard</button>
                         <button class="popup-scoring-button" value="half">Half PPR</button>
                         <button class="popup-scoring-button" value="ppr">Full PPR</button>
@@ -44,7 +45,7 @@
                     </div>
                 </div>
                 <div class="loader">
-                    <img class="loader-image" src="/static/img/ajax-loader.gif" alt="Loading..." />
+                    <img class="loader-image" src="/static/img/loader.gif" alt="Loading..." />
                 </div>
             </div>
         </header>
@@ -112,8 +113,10 @@
                     <input type="search" placeholder="Player Search" class="player-search">
                     <button type="button"  class="clear-search-button">Clear Search</button>
                 </div>
-                <div class="draft-board">
-                    {{ board | safe }}
+                <div class="table-wrapper">
+                    <div class="draft-board">
+                        {{ board | safe }}
+                    </div>
                 </div>
             </div>
         </main>

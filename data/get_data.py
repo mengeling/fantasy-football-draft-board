@@ -24,10 +24,11 @@ def create_draft_board(engine, username, df_rankings, df_stats):
     df_stats = df_stats.set_index("id")
     df = df_rankings.join(df_stats, how="left").reset_index()
 
-    # Remove commas from stats, fill missing stats with zeros, and replace empty strings with nulls
+    # Fill nulls and non-numeric values with zeros
     stat_cols = df_stats.columns
-    df[stat_cols] = df[stat_cols].replace(",", "", regex=True).fillna(0)
-    df[c.FILL_NULL_COLS] = df[c.FILL_NULL_COLS].replace("", np.nan)
+    df[stat_cols] = df[stat_cols].fillna(0)
+    for col in c.FILL_NULL_COLS:
+        df[col] = pd.to_numeric(df[col]).fillna(0).astype(int)
 
     # Create drafted column with zeros (draft hasn't started) and combine name, team, and position into player
     df["drafted"] = np.zeros(df.shape[0])
@@ -36,11 +37,11 @@ def create_draft_board(engine, username, df_rankings, df_stats):
         + df["id"].astype(str)
         + "'>"
         + df["name"]
+        + "</span>"
         + ", "
         + df["team"]
         + ", "
         + df["position"]
-        + "</span>"
     )
 
     # Create draft board table and then load the dataframe into it
@@ -63,7 +64,7 @@ def create_stats_all(dict_stats, headers):
         df_standardized_stats = pd.DataFrame()
         for col in headers:
             df_standardized_stats[col] = df_pos_stats[col] if col in df_pos_stats.columns else 0
-            stats_df_lst.append(df_standardized_stats)
+        stats_df_lst.append(df_standardized_stats)
     df = pd.concat(stats_df_lst)
 
     # To drop duplicates (players with multiple positions) keep rows with most points scored for each ID
@@ -104,7 +105,7 @@ def scrape_stats(url, headers_dict, stats_all_headers):
 
         # Create dataframe for the position and add it to the dictionary
         df = pd.DataFrame(rows, columns=v)
-        dict_stats["position"] = df
+        dict_stats[k] = df
 
     # Combine each position's stats into one table and return combined df
     return create_stats_all(dict_stats, stats_all_headers)

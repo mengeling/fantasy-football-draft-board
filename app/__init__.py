@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine, text
 
+pd.set_option("display.max_colwidth", -1)
 sys.path.append("../data/")
 
 import app_constants as c

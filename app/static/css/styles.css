@@ -2,12 +2,12 @@
 body {
   text-align: center;
   display: block;
-  width: 100%;
-  height: 95%;
-//  background-color: #E0E0E0;
+  font-family: "Playfair Display SC", "Helvetica", "Sans";
+  background-color: #edf2f9;
 }
 
 button {
+  font-family: "Playfair Display SC", "Helvetica", "Sans";
   cursor: pointer;
 }
 /* End general formatting */
@@ -81,24 +81,33 @@ button {
 
 /* Start formatting for player details and draft board */
 .player-details {
-    width: 90%;
-    font-size: 0.7em;
+  width: 90%;
+  font-size: 0.7em;
+}
+
+.table-wrapper table {
+  width: 100%;
 }
 
 .draft-board {
-    width: 90%;
-    height: 500px;
-    overflow: scroll;
-    font-size: 0.7em;
-    cursor: default;
+  margin-left: 2%;
+  margin-right: 2%;
+  height: 500px;
+  overflow: scroll;
+  font-size: 0.7em;
+  cursor: default;
 }
 
-.fake-link {
-    color: blue;
+table, th {
+  text-align: left;
 }
 
 tr:hover {
   background-color: #ADD8E6;
+}
+
+.fake-link {
+  color: blue;
 }
 
 #draft-undraft-button,

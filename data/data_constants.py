@@ -5,7 +5,7 @@ RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php"
 STATS_URL = BASE_URL + "/nfl/stats/{}.php"
 LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fantasypros.com/"
 
-FILL_NULL_COLS = ["bye_week", "avg_draft_pick"]
+FILL_NULL_COLS = ["bye_week", "avg_draft_pick", "fantasy_pts"]
 BIO_HEADERS = ["Height", "Weight", "Age", "College"]
 RANKINGS_HEADERS = [
     "id",
@@ -192,7 +192,7 @@ CREATE TABLE draft_board_{} (
     worst_ranking        INT,
     avg_ranking          DOUBLE PRECISION,
     std_dev_ranking      DOUBLE PRECISION,
-    avg_draft_pick       DOUBLE PRECISION,
+    avg_draft_pick       INT,
     img_url              TEXT,
     height               TEXT,
     weight               TEXT,
@@ -201,13 +201,13 @@ CREATE TABLE draft_board_{} (
     pass_cmp             INT,
     pass_att             INT,
     pass_cmp_pct         DOUBLE PRECISION,
-    pass_yds             INT,
+    pass_yds             TEXT,
     pass_yds_per_att     DOUBLE PRECISION,
     pass_td              INT,
     pass_int             INT,
     pass_sacks           INT,
     rush_att             INT,
-    rush_yds             INT,
+    rush_yds             TEXT,
     rush_yds_per_att     DOUBLE PRECISION,
     rush_long            INT,
     rush_20              INT,
@@ -215,7 +215,7 @@ CREATE TABLE draft_board_{} (
     fumbles              INT,
     receptions           INT,
     rec_tgt              INT,
-    rec_yds              INT,
+    rec_yds              TEXT,
     rec_yds_per_rec      DOUBLE PRECISION,
     rec_long             INT,
     rec_20               INT,
@@ -239,7 +239,7 @@ CREATE TABLE draft_board_{} (
     safeties             INT,
     special_teams_td     INT,
     games                INT,
-    fantasy_pts          DOUBLE PRECISION,
+    fantasy_pts          INT,
     fantasy_pts_per_game DOUBLE PRECISION,
     drafted              INT,
     player               TEXT
