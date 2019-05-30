@@ -55,7 +55,7 @@ def index():
     """
 
     # Create placeholders
-    board, player_details, player_id, img_url = select_top_player_board(username="")
+    board, player_details, player_id, img_url = select_top_player_board(username="mike")
     return render_template(
         "index.html",
         board=board,
@@ -140,7 +140,7 @@ def get_board_subset():
     df = pd.read_sql_query(text(q), con=engine)
 
     # Convert draft board to HTML and render it
-    board = df[c.BOARD_HEADERS].rename(c.RENAMED_BOARD_HEADERS, index=str)
+    board = df[c.BOARD_HEADERS].rename(columns=c.RENAMED_BOARD_HEADERS, index=str)
     board = board.to_html(index=False, escape=False)
     return jsonify({"board": board})
 

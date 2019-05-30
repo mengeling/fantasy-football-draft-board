@@ -147,7 +147,6 @@ $(".login-button").on("click", function() {
   check_if_board_exists();
 });
 
-
 $(".username-input").keypress(function(event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13') {

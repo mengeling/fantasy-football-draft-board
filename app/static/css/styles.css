@@ -3,20 +3,57 @@ body {
   text-align: center;
   display: block;
   font-family: "Playfair Display SC", "Helvetica", "Sans";
-  background-color: #edf2f9;
+  background-color: #fcfcff;
 }
 
 button {
   font-family: "Playfair Display SC", "Helvetica", "Sans";
+  font-size: 0.7em;
   cursor: pointer;
+  border-radius: 6px;
+  padding: 0.25%;
+}
+
+table {
+  text-align: left;
+  border-collapse: collapse;
+}
+
+tr td, tr th {
+  padding-top: 0.4%;
+  padding-bottom: 0.4%;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  font-size: 0.9em;
+}
+
+tr:nth-child(even) {
+  background-color: #e6f2ff;
+}
+
+td {
+  padding: 0.7%;
 }
 /* End general formatting */
 
 
-/* Start formatting for pop-ups and loading GIF */
+/* Start formatting for login, pop-ups, and loading GIF */
+.username-div {
+  width: 100%;
+  margin-bottom: 3%;
+}
+
+.username-input {
+  width: 40%;
+}
+
 .login-background {
     background: rgba(0,0,0,.4);
-    display: block;
+    //display: block;
+    display: none;
     height: 100%;
     position: fixed;
     text-align: center;
@@ -79,14 +116,84 @@ button {
 /* End formatting for pop-ups and loading GIF */
 
 
-/* Start formatting for player details and draft board */
+/* Start formatting for player details */
 .player-details {
   width: 90%;
-  font-size: 0.7em;
 }
 
 .player-pic {
   height: 150px;
+}
+/* End formatting for player details */
+
+
+
+/* Start formatting for draft board */
+.search-board-wrapper {
+  border: 1.5px solid #ddd;
+  background-color: #ddd;
+}
+
+.available-drafted-container {
+  width: 98%;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.available-button, .drafted-button {
+  background-color: #fcfcff;
+  padding-top: 0.5%;
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+  margin: 0;
+  margin-right: -0.3%;
+  font-size: 0.7em;
+  border-top: 1.5px solid #ddd;
+  border-left: 1.5px solid #ddd;
+  border-right: 1.5px solid #ddd;
+  cursor: pointer;
+}
+
+.available-button {
+  background-color: #ddd;
+}
+
+.drafted-button {
+  background-color: #fcfcff;
+}
+
+.position-team-player-search {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  text-align: left;
+}
+
+.position-text, .team-text {
+  font-size: 0.8em;
+  margin-left: 0.2%;
+}
+
+.position-dropdown, .team-dropdown {
+  margin-right: 1%;
+}
+
+.player-search {
+  width: 15%
+}
+
+.clear-search-button {
+  margin-left: 0.75%;
+}
+
+.table-wrapper {
+  background-color: #fcfcff;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .table-wrapper table {
@@ -94,30 +201,17 @@ button {
 }
 
 .draft-board {
-  margin-left: 2%;
-  margin-right: 2%;
-  height: 500px;
+  height: 550px;
   overflow: scroll;
-  font-size: 0.7em;
+  font-size: 0.72em;
   cursor: default;
 }
 
-table, th {
-  text-align: left;
-}
-
-tr:hover {
-  background-color: #ADD8E6;
+.draft-board tr:hover {
+  background-color: #cce6ff;
 }
 
 .fake-link {
   color: blue;
 }
-
-#draft-undraft-button,
-.available-button,
-.drafted-button {
-  padding: 10px;
-  border-radius: 5px;
-}
-/* End formatting for player details and draft board */
+/* End formatting for draft board */
