@@ -85,6 +85,10 @@ button {
   font-size: 0.7em;
 }
 
+.player-pic {
+  height: 150px;
+}
+
 .table-wrapper table {
   width: 100%;
 }

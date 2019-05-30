@@ -148,6 +148,14 @@ $(".login-button").on("click", function() {
 });
 
 
+$(".username-input").keypress(function(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13') {
+      check_if_board_exists();
+    }
+});
+
+
 $(".login-scoring-button").on("click", function() {
   var scoring_option = $(this).val();
   download_data(scoring_option);
