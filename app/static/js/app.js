@@ -1,3 +1,20 @@
+// START GENERAL FUNCTIONS
+function update_player_data(data) {
+  $(".player-pic").attr("src", data.bio.img_url);
+  $(".player-pic").attr("id", data.bio.id);
+  $(".player-name").text(data.bio.name);
+  $(".player-team-pos").text(data.bio.team + " " + data.bio.position);
+  $(".player-detail-height").text(data.bio.height);
+  $(".player-detail-weight").text(data.bio.weight);
+  $(".player-detail-age").text(data.bio.age);
+  $(".player-detail-college").text(data.bio.college);
+  $(".rank-table").html(data.rankings);
+  $(".stats-table").html(data.stats);
+}
+// END GENERAL FUNCTIONS
+
+
+
 // START LOGIN FUNCTIONS
 function get_data() {
   $.ajax({
@@ -7,9 +24,7 @@ function get_data() {
     data: { username: $("body").attr("class") },
     success: function(data) {
       $("#draft-undraft-button").attr("class", "0");
-      $(".player-pic").attr("src", data.img_url);
-      $(".player-pic").attr("id", data.player_id);
-      $(".player-stats").html(data.player_details);
+      update_player_data(data);
       $(".draft-board").html(data.board);
     }
   });
@@ -70,9 +85,7 @@ function get_player_details(player_id) {
     data: { username: $("body").attr("class"),
             player_id: player_id },
     success: function(data) {
-      $(".player-pic").attr("src", data.img_url);
-      $(".player-pic").attr("id", data.player_id);
-      $(".player-stats").html(data.player_details);
+      update_player_data(data);
     }
   });
 }
@@ -89,9 +102,7 @@ function get_drafted_board() {
     data: { username: $("body").attr("class"),
             drafted: $("#draft-undraft-button").attr("class") },
     success: function(data) {
-      $(".player-pic").attr("src", data.img_url);
-      $(".player-pic").attr("id", data.player_id);
-      $(".player-stats").html(data.player_details);
+      update_player_data(data);
       $(".draft-board").html(data.board);
     }
   });
@@ -106,9 +117,7 @@ function draft_undraft_player() {
             drafted: $("#draft-undraft-button").attr("class"),
             player_id: $(".player-pic").attr("id") },
     success: function(data) {
-      $(".player-pic").attr("src", data.img_url);
-      $(".player-pic").attr("id", data.player_id);
-      $(".player-stats").html(data.player_details);
+      update_player_data(data);
       $(".draft-board").html(data.board);
     }
   });
@@ -131,9 +140,7 @@ function download_data(scoring_option) {
     success: function(data) {
       $(".loader").hide();
       $("#draft-undraft-button").attr("class", "0");
-      $(".player-pic").attr("src", data.img_url);
-      $(".player-pic").attr("id", data.player_id);
-      $(".player-stats").html(data.player_details);
+      update_player_data(data);
       $(".draft-board").html(data.board);
     }
   });

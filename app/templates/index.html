@@ -58,21 +58,25 @@
                     <h3 class="player-name">{{ name }}</h3>
                     <h5 class="player-team-pos">{{ team }} {{ position }}</h5>
                     <div class="player-bio-sub">
-                        <p class="player-detail-desc">Height</p> {{ height }}
-                        <p class="player-detail-desc">Age</p> {{ age }}
+                        <p class="player-detail-desc">Height</p><p class="player-detail-height">{{ height }}</p>
+                        <p class="player-detail-desc">Age</p><p class="player-detail-age">{{ age }} | 0</p>
                     </div>
                     <div class="player-bio-sub">
-                        <p class="player-detail-desc">Weight</p> {{ weight }}
-                        <p class="player-detail-desc">College</p> {{ college }}
+                        <p class="player-detail-desc">Weight</p><p class="player-detail-weight">{{ weight }}</p>
+                        <p class="player-detail-desc">College</p><p class="player-detail-college">{{ college }}</p>
                     </div>
                 </div>
                 <div class="player-table">
                     <h4 class="rank-header">Rankings</h4>
-                    {{ rankings | safe }}
+                    <div class="rank-table">
+                        {{ rankings | safe }}
+                    </div>
                 </div>
                 <div class="player-table">
                     <h4 class="stats-header">Previous Stats</h4>
-                    {{ stats | safe }}
+                    <div class="stats-table">
+                        {{ stats | safe }}
+                    </div>
                 </div>
                 <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
             </div>

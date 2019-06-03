@@ -12,14 +12,17 @@ PLAYER_BIO_HEADERS = {
     "weight": str,
     "age": int,
     "college": str,
-    "rank": int,
-    "bye_week": int,
-    "position_ranking": int,
-    "best_ranking": int,
-    "worst_ranking": int,
-    "avg_ranking": float,
-    "std_dev_ranking": float,
-    "avg_draft_pick": int,
+}
+PLAYER_BIO_PLACEHOLDERS = {
+    "id": "",
+    "img_url": MISSING_PHOTO_URL,
+    "name": "None",
+    "team": "None",
+    "position": "None",
+    "height": "None",
+    "weight": "None",
+    "age": "None",
+    "college": "None",
 }
 PLAYER_RANK_HEADERS = {
     "rank": "Overall",

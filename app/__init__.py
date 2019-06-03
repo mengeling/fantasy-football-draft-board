@@ -23,16 +23,21 @@ def parse_player_details(df_player):
     # Loop through bio columns and add the value to player's dictionary
     bio = {}
     for col, dtype in c.PLAYER_BIO_HEADERS.items():
-        bio[col] = dtype(df_player[col][0])
+        try:
+            bio[col] = dtype(df_player[col][0])
+        except:
+            bio[col] = df_player[col][0]
 
-    # Get ranking data and rename columns for display
+    # Get ranking data, rename columns for display, and convert to HTML
     rank_cols = list(c.PLAYER_RANK_HEADERS.keys())
     rankings = df_player[rank_cols].rename(columns=c.PLAYER_RANK_HEADERS, index=str)
+    rankings = rankings.to_html(index=False, escape=False)
 
-    # Use player's position to get position-specific stats
+    # Use player's position to get position-specific stats and convert to HTML
     position = bio["position"].lower()
     stat_cols = list(c.PLAYER_STAT_HEADERS[position].keys())
     stats = df_player[stat_cols].rename(columns=c.PLAYER_STAT_HEADERS[position], index=str)
+    stats = stats.to_html(index=False, escape=False)
     return bio, rankings, stats
 
 
@@ -53,25 +58,20 @@ def select_top_player_board(username, drafted=0):
         df_player = df.iloc[[df["rank"].idxmin()]]
 
         # Parse player data into bio dict and ranking and stat dfs and then select draft board columns
-        player_bio, player_rankings, player_stats = parse_player_details(df_player)
-        board_cols = list(c.BOARD_HEADERS.keys())
-        board = df[board_cols].rename(columns=c.BOARD_HEADERS, index=str)
+        bio, rankings, stats = parse_player_details(df_player)
+        board = df[list(c.BOARD_HEADERS.keys())].rename(columns=c.BOARD_HEADERS, index=str)
+        board = board.to_html(index=False, escape=False)
 
-    # If it fails, create placeholder data
+    # If it fails, create placeholder data and convert it to HTML
     except:
-        player_bio = {}
-        rank_cols = list(c.PLAYER_RANK_HEADERS.keys())
-        stat_cols = list(c.PLAYER_STAT_HEADERS["qb"].keys())
-        board_cols = list(c.BOARD_HEADERS.keys())
-        player_rankings = pd.DataFrame(columns=rank_cols)
-        player_stats = pd.DataFrame(columns=stat_cols)
-        board = pd.DataFrame(columns=board_cols).rename(columns=c.BOARD_HEADERS, index=str)
-
-    # Convert player rankings, player stats, and draft board to HTML
-    player_rankings = player_rankings.to_html(index=False, escape=False)
-    player_stats = player_stats.to_html(index=False, escape=False)
-    board = board.to_html(index=False, escape=False)
-    return player_bio, player_rankings, player_stats, board
+        bio = c.PLAYER_BIO_PLACEHOLDERS
+        rankings = pd.DataFrame(columns=list(c.PLAYER_RANK_HEADERS.keys()))
+        rankings = rankings.rename(columns=c.PLAYER_RANK_HEADERS, index=str).to_html(index=False, escape=False)
+        stats = pd.DataFrame(columns=list(c.PLAYER_STAT_HEADERS["qb"].keys()))
+        stats = stats.rename(columns=c.PLAYER_STAT_HEADERS["qb"], index=str).to_html(index=False, escape=False)
+        board = pd.DataFrame(columns=list(c.BOARD_HEADERS.keys()))
+        board = board.rename(columns=c.BOARD_HEADERS, index=str).to_html(index=False, escape=False)
+    return bio, rankings, stats, board
 
 
 @app.route("/", methods=["GET"])
@@ -82,7 +82,7 @@ def index():
 
     # Create placeholders
     bio, rankings, stats, board = select_top_player_board(username="mike")
-    return render_template("index.html", bio=bio, rankings=rankings, stats=stats, board=board, **bio)
+    return render_template("index.html", rankings=rankings, stats=stats, board=board, **bio)
 
 
 @app.route("/check-if-board-exists/", methods=["GET"])
@@ -105,8 +105,8 @@ def get_data():
 
     # Get top available player, draft board, and render them
     username = request.args.get("username")
-    player_shared, player_pos, board = select_top_player_board(username)
-    return jsonify({"player_shared": player_shared, "player_pos": player_pos, "board": board})
+    bio, rankings, stats, board = select_top_player_board(username)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
 @app.route("/get-player-details/", methods=["GET"])
@@ -119,8 +119,8 @@ def get_player_details():
     username = request.args.get("username")
     player_id = int(request.args.get("player_id"))
     df_player = pd.read_sql_query(c.Q_ID.format(username, player_id), con=engine)
-    player_dict = parse_player_details(df_player)
-    return jsonify({"player_dict": player_dict})
+    bio, rankings, stats = parse_player_details(df_player)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats})
 
 
 @app.route("/get-drafted-board/", methods=["GET"])
@@ -132,8 +132,8 @@ def get_drafted_board():
     # Use drafted value to get top player, draft board, and pass them back as JSON
     username = request.args.get("username")
     drafted = int(request.args.get("drafted"))
-    player_dict, board = select_top_player_board(username, drafted)
-    return jsonify({"player_dict": player_dict, "board": board})
+    bio, rankings, stats, board = select_top_player_board(username, drafted)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
 @app.route("/get-board-subset/", methods=["GET"])
@@ -159,7 +159,7 @@ def get_board_subset():
     df = pd.read_sql_query(text(q), con=engine)
 
     # Convert draft board to HTML and render it
-    board = df[c.BOARD_HEADERS.keys].rename(columns=c.BOARD_HEADERS, index=str)
+    board = df[list(c.BOARD_HEADERS.keys())].rename(columns=c.BOARD_HEADERS, index=str)
     board = board.to_html(index=False, escape=False)
     return jsonify({"board": board})
 
@@ -178,8 +178,8 @@ def draft_undraft_player():
     engine.execute(c.UPDATE_BOARD.format(username, updated_drafted, player_id))
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    player_dict, board = select_top_player_board(username, drafted)
-    return jsonify({"player_dict": player_dict, "board": board})
+    bio, rankings, stats, board = select_top_player_board(username, drafted)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
 @app.route("/download-data/", methods=["GET"])
@@ -194,8 +194,8 @@ def download_data():
     g.get_data(username, scoring_option)
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    player_dict, board = select_top_player_board(username)
-    return jsonify({"player_dict": player_dict, "board": board})
+    bio, rankings, stats, board = select_top_player_board(username)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
 if __name__ == "__main__":
