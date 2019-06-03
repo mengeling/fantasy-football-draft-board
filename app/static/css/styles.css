@@ -113,35 +113,126 @@ td {
   height: 40%;
   padding-top: 5%;
 }
+
+.back-update-data {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1.5%;
+  margin-bottom: 1.2%;
+}
+
+.back-login-button {
+  float: left;
+  font-size: 0.8em;
+  padding: 0.5%;
+}
+
+.update-rankings-button {
+  font-size: 0.8em;
+  padding: 0.5%;
+}
 /* End formatting for pop-ups and loading GIF */
 
 
 /* Start formatting for player details */
 .player-details {
-  width: 90%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2.5%;
   background-color: #e6f2ff;
+  text-align: left;
+  height: 160px
+}
+
+.player-pic-container {
+  float: left;
+  width: 180px;
+  margin: 0;
 }
 
 .player-pic {
-  height: 150px;
+  width: 160px;
+}
+
+.player-bio-container {
+  float: left;
+  width: 20%
+}
+
+.player-name,
+.player-team-pos {
+  margin: 0;
 }
 
 .player-name {
-  font-size: 1.75em;
-  font-weight: bold;
+  margin-top: 2%;
+}
+
+.player-bio-sub {
+  float: left;
+  font-size: 0.8em;
+  margin-top: 5%;
+  margin-right: 8%;
+}
+
+.player-detail-desc {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.player-table {
+  float: left;
+  font-size: 0.75em;
+  margin-top: 2%;
+}
+
+.player-table table {
+  background-color: #fcfcff;
+  cellspacing: 10;
+}
+
+.player-table th {
+  padding:0 8px 0 0;
+}
+
+.player-table td {
+  padding:0 5px 0 0;
+}
+
+.rank-header,
+.stats-header {
+  margin-top: 0;
+  margin-bottom: 0.5%;
+}
+
+#draft-undraft-button {
+  text-align: right;
+  position: absolute;
+  top: 12%;
+  right: 3%;
+  font-size: 0.85em;
+  padding: 1%;
 }
 /* End formatting for player details */
 
 
 
 /* Start formatting for draft board */
+.board-container {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .search-board-wrapper {
   border: 1.5px solid #e6f2ff;
   background-color: #e6f2ff;
 }
 
 .available-drafted-container {
-  width: 98%;
+  width: 95%;
   margin-top: 0;
   margin-bottom: 0;
   text-align: left;
@@ -159,11 +250,13 @@ td {
 }
 
 .available-button {
+  padding-bottom: 0.1%;
   background-color: #e6f2ff;
 }
 
 .drafted-button {
-  background-color: #f3f9ff;
+  padding-bottom: 0.1%;
+  background-color: #fcfcff;
 }
 
 .position-team-player-search {
@@ -176,7 +269,7 @@ td {
 }
 
 .position-text, .team-text {
-  font-size: 0.8em;
+  font-size: 0.7em;
   margin-left: 0.2%;
 }
 
