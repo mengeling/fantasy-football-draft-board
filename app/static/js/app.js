@@ -205,6 +205,8 @@ $(".draft-board").on("click", "tr", function() {
 $(".available-button").on("click", function() {
   $("#draft-undraft-button").attr("class", "0");
   $("#draft-undraft-button").text("Draft Selected Player");
+  $(".available-button").css("background-color", "#e6f2ff");
+  $(".drafted-button").css("background-color", "#f3f9ff");
   clear_search();
   get_drafted_board();
 })
@@ -213,6 +215,8 @@ $(".available-button").on("click", function() {
 $(".drafted-button").on("click", function() {
   $("#draft-undraft-button").attr("class", "1");
   $("#draft-undraft-button").text("Undraft Selected Player");
+  $(".available-button").css("background-color", "#f3f9ff");
+  $(".drafted-button").css("background-color", "#e6f2ff");
   clear_search();
   get_drafted_board();
 })

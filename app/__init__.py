@@ -12,15 +12,35 @@ import get_data as g
 app = Flask(__name__)
 
 
+def separate_player_details(df_player):
+    """
+    Separate out all of the individual components of the player details
+
+    :param df_player: Pandas dataframe, selected player's details
+    :return name: player's ID, image URL, name, team, position, bio, and stats
+    """
+
+    # Get player ID int and strings for image URL, name, team, and position
+    player_id = int(df_player["id"][0])
+    img_url = df_player["img_url"][0]
+    name = df_player["name"][0]
+    team = df_player["team"][0]
+    position = df_player["position"][0]
+
+    # Get bio values and use player's position to create position-specific stats
+    bio = df_player[c.BIO_HEADERS]
+    stat_cols = c.SHARED_STAT_HEADERS + c.POS_STAT_HEADERS[position.lower()]
+    stats = df_player[stat_cols]
+    return player_id, img_url, name, team, position, bio, stats
+
+
 def select_top_player_board(username, drafted=0):
     """
     Select top ranked player and get updated draft board
 
     :param username: String, username used to query draft board
     :param drafted: Binary, 1 if drafted players are shown and 0 if not
-    :return: board, pandas dataframe with available or drafted players
-    :return: player_details, pandas dataframe with selected player's details
-    :return: player_id, integer ID for the selected player
+    :return: draft board df, selected player df, selected player's ID, select player's image URL
     """
 
     # Try to get drafted or available draft board and if it fails create empty df
@@ -31,21 +51,22 @@ def select_top_player_board(username, drafted=0):
 
     # If df doesn't have any rows, create placeholder values
     if df.shape[0] == 0:
-        df_player = df
-        player_id = None
+        df_bio = df[c.BIO_HEADERS]
+        df_stats = df[c.SHARED_STAT_HEADERS]
         img_url = c.MISSING_PHOTO_URL
+        player_id, name, team, position = None, None, None, None
 
-    # Otherwise use minimum rank to get top ranked player's ID, stats, and image URL
+    # Otherwise use minimum rank to get top ranked player and then parse their details
     else:
         df_player = df.iloc[[df["rank"].idxmin()]]
-        player_id = int(df_player["id"][0])
-        img_url = df_player["img_url"][0]
+        player_id, img_url, name, team, position, bio, stats = separate_player_details(df_player)
 
-    # Convert draft board and player details to HTML
+    # Convert draft board, bio, and stats to HTML
     board = df[c.BOARD_HEADERS].rename(columns=c.RENAMED_BOARD_HEADERS, index=str)
     board = board.to_html(index=False, escape=False)
-    player_details = df_player.to_html(index=False, escape=False)
-    return board, player_details, player_id, img_url
+    bio = bio.to_html(index=False, escape=False)
+    stats = stats.to_html(index=False, escape=False)
+    return board, player_id, img_url, name, team, position, bio, stats
 
 
 @app.route("/", methods=["GET"])
@@ -55,13 +76,17 @@ def index():
     """
 
     # Create placeholders
-    board, player_details, player_id, img_url = select_top_player_board(username="mike")
+    board, player_id, img_url, name, team, position, bio, stats = select_top_player_board(username="mike")
     return render_template(
         "index.html",
         board=board,
-        player_details=player_details,
         player_id=player_id,
         img_url=img_url,
+        name=name,
+        team=team,
+        position=position,
+        bio=bio,
+        stats=stats,
     )
 
 

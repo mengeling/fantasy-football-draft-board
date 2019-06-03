@@ -54,8 +54,14 @@
         <main>
             <div class="player-details">
                 <img class="player-pic" id="{{ player_id }}" src="{{ img_url }}" onerror="this.src='https://images.fantasypros.com/images/photo_missing_square.jpg'">
+                <span class="player-name">{{ name }}</span>
+                <span class="player-team">{{ team }}</span>
+                <span class="player-position">{{ position }}</span>
+                <div class="player-bio">
+                    {{ bio | safe }}
+                </div>
                 <div class="player-stats">
-                    {{ player_details | safe }}
+                    {{ stats | safe }}
                 </div>
                 <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
             </div>

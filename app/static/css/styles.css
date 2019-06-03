@@ -119,10 +119,16 @@ td {
 /* Start formatting for player details */
 .player-details {
   width: 90%;
+  background-color: #e6f2ff;
 }
 
 .player-pic {
   height: 150px;
+}
+
+.player-name {
+  font-size: 1.75em;
+  font-weight: bold;
 }
 /* End formatting for player details */
 
@@ -130,8 +136,8 @@ td {
 
 /* Start formatting for draft board */
 .search-board-wrapper {
-  border: 1.5px solid #ddd;
-  background-color: #ddd;
+  border: 1.5px solid #e6f2ff;
+  background-color: #e6f2ff;
 }
 
 .available-drafted-container {
@@ -142,25 +148,22 @@ td {
 }
 
 .available-button, .drafted-button {
-  background-color: #fcfcff;
   padding-top: 0.5%;
   padding-left: 0.5%;
   padding-right: 0.5%;
   margin: 0;
   margin-right: -0.3%;
   font-size: 0.7em;
-  border-top: 1.5px solid #ddd;
-  border-left: 1.5px solid #ddd;
-  border-right: 1.5px solid #ddd;
+  border: 1.5px solid #e6f2ff;
   cursor: pointer;
 }
 
 .available-button {
-  background-color: #ddd;
+  background-color: #e6f2ff;
 }
 
 .drafted-button {
-  background-color: #fcfcff;
+  background-color: #f3f9ff;
 }
 
 .position-team-player-search {
