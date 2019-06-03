@@ -41,7 +41,7 @@ def parse_player_details(df_player):
     return bio, rankings, stats
 
 
-def select_top_player_board(username, drafted=0):
+def select_top_player_board(username="", drafted=0):
     """
     Select top ranked player and get updated draft board
 
@@ -81,7 +81,7 @@ def index():
     """
 
     # Create placeholders
-    bio, rankings, stats, board = select_top_player_board(username="mike")
+    bio, rankings, stats, board = select_top_player_board()
     return render_template("index.html", rankings=rankings, stats=stats, board=board, **bio)
 
 
