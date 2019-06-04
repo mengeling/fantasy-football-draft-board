@@ -1,6 +1,7 @@
-HOST_NAME = "ec2-54-208-25-214.compute-1.amazonaws.com"
+#!/usr/bin/python3
+HOST_NAME = "ec2-18-233-6-4.compute-1.amazonaws.com"
 
-DB_ENGINE = "postgresql://postgres:silvercar@localhost:5432/ffball"
+DB_ENGINE = "postgresql://postgres:postgres@localhost:5432/ffball"
 
 MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
 

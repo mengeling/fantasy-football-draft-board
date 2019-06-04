@@ -1,13 +1,15 @@
+#!/usr/bin/python3
 import sys
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from sqlalchemy import create_engine, text
 
 pd.set_option("display.max_colwidth", -1)
-sys.path.append("../data/")
+sys.path.append("/var/www/ffball/fantasy-football-draft-board/app/")
 
 import app_constants as c
 import get_data as g
+
 
 app = Flask(__name__)
 
@@ -54,6 +56,7 @@ def select_top_player_board(username="", drafted=0):
     try:
 
         # Query draft board and use minimum rank to get top player
+engine = create_engine(c.DB_ENGINE)
         df = pd.read_sql_query(c.Q_ALL.format(username, drafted), con=engine)
         df_player = df.iloc[[df["rank"].idxmin()]]
 
@@ -93,6 +96,7 @@ def check_if_board_exists():
 
     username = request.args.get("username")
     username = username.lower().replace(" ", "_")
+engine = create_engine(c.DB_ENGINE)
     exists = pd.read_sql_query(c.CHECK_IF_BOARD_EXISTS.format(username), con=engine).values[0][0]
     return jsonify({"exists": int(exists), "username": username})
 
@@ -118,6 +122,7 @@ def get_player_details():
     # Retrieve player ID and player details
     username = request.args.get("username")
     player_id = int(request.args.get("player_id"))
+engine = create_engine(c.DB_ENGINE)
     df_player = pd.read_sql_query(c.Q_ID.format(username, player_id), con=engine)
     bio, rankings, stats = parse_player_details(df_player)
     return jsonify({"bio": bio, "rankings": rankings, "stats": stats})
@@ -156,6 +161,7 @@ def get_board_subset():
         q = c.Q_NAME_TEAM.format(username, drafted, name, team)
     else:
         q = c.Q_NAME_POS_TEAM.format(username, drafted, name, position, team)
+engine = create_engine(c.DB_ENGINE)
     df = pd.read_sql_query(text(q), con=engine)
 
     # Convert draft board to HTML and render it
@@ -175,6 +181,7 @@ def draft_undraft_player():
     drafted = int(request.args.get("drafted"))
     updated_drafted = 1 if drafted == 0 else 0
     player_id = request.args.get("player_id")
+engine = create_engine(c.DB_ENGINE)
     engine.execute(c.UPDATE_BOARD.format(username, updated_drafted, player_id))
 
     # Retrieve top player, updated draft board, and pass them back as JSON
@@ -200,6 +207,4 @@ def download_data():
 
 if __name__ == "__main__":
 
-    # Create DB engine and run the app
-    engine = create_engine(c.DB_ENGINE)
-    app.run(debug=True, host=c.HOST_NAME)
+    app.run(debug=True)
