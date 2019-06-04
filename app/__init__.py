@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, text
 
 pd.set_option("display.max_colwidth", -1)
 sys.path.append("/var/www/ffball/fantasy-football-draft-board/app/")
+sys.path.append("/var/www/ffball/fantasy-football-draft-board/data/")
 
 import app_constants as c
 import get_data as g
