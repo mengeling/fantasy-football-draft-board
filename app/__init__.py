@@ -202,4 +202,4 @@ if __name__ == "__main__":
 
     # Create DB engine and run the app
     engine = create_engine(c.DB_ENGINE)
-    app.run(debug=True)
+    app.run(debug=True, host=c.HOST_NAME)

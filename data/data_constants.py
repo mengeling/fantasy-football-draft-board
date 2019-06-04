@@ -1,4 +1,4 @@
-DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
+DB_ENGINE = "postgresql://postgres:silvercar@localhost:5432/ffball"
 
 BASE_URL = "https://www.fantasypros.com"
 RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php"

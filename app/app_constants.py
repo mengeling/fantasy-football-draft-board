@@ -1,4 +1,6 @@
-DB_ENGINE = "postgresql://mengeling:mengeling@localhost:5432/ffball"
+HOST_NAME = "ec2-54-208-25-214.compute-1.amazonaws.com"
+
+DB_ENGINE = "postgresql://postgres:silvercar@localhost:5432/ffball"
 
 MISSING_PHOTO_URL = "https://images.fantasypros.com/images/photo_missing_square.jpg"
 
