@@ -199,7 +199,6 @@ td {
 
 .player-tables {
   float: left;
-  display: flex;
 }
 
 .player-table {
@@ -208,7 +207,7 @@ td {
 }
 
 .player-table table {
-  flex-grow: 10;
+  flex-grow: 100;
   background-color: #fcfcff;
   cellspacing: 10;
 }
