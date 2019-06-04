@@ -7,6 +7,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 
+sys.path.append("/var/www/ffball/fantasy-football-draft-board/data/")
 import data_constants as c
 
 
