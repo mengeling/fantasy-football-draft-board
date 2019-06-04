@@ -197,14 +197,15 @@ td {
   margin: 0;
 }
 
-.player-table {
+.player-tables {
   float: left;
+  display: flex
   font-size: 0.75em;
   margin-top: 2%;
-  width: 50%;
 }
 
 .player-table table {
+  flex-grow: 100;
   background-color: #fcfcff;
   cellspacing: 10;
 }

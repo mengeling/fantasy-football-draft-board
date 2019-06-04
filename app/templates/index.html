@@ -66,16 +66,18 @@
                         <p class="player-detail-desc">College</p><p class="player-detail-college">{{ college }}</p>
                     </div>
                 </div>
-                <div class="player-table">
-                    <h4 class="rank-header">Rankings</h4>
-                    <div class="rank-table">
-                        {{ rankings | safe }}
+                <div class="player-tables">
+                    <div class="player-table">
+                        <h4 class="rank-header">Rankings</h4>
+                        <div class="rank-table">
+                            {{ rankings | safe }}
+                        </div>
                     </div>
-                </div>
-                <div class="player-table">
-                    <h4 class="stats-header">Previous Stats</h4>
-                    <div class="stats-table">
-                        {{ stats | safe }}
+                    <div class="player-table">
+                        <h4 class="stats-header">Previous Stats</h4>
+                        <div class="stats-table">
+                            {{ stats | safe }}
+                        </div>
                     </div>
                 </div>
                 <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
