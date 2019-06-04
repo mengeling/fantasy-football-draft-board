@@ -199,13 +199,16 @@ td {
 
 .player-tables {
   float: left;
-  display: flex
+  display: flex;
+}
+
+.player-table {
   font-size: 0.75em;
   margin-top: 2%;
 }
 
 .player-table table {
-  flex-grow: 100;
+  flex-grow: 10;
   background-color: #fcfcff;
   cellspacing: 10;
 }
