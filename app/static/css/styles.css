@@ -34,10 +34,6 @@ th {
   font-size: 0.9em;
 }
 
-tr:nth-child(even) {
-  background-color: #e6f2ff;
-}
-
 td {
   padding: 0.7%;
 }
@@ -345,6 +341,10 @@ td {
 
 .draft-board tr:hover {
   background-color: #cce6ff;
+}
+
+.draft-board tr:nth-child(odd) {
+  background-color: #e6f2ff;
 }
 
 .fake-link {
