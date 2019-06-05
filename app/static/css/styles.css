@@ -343,7 +343,11 @@ td {
   background-color: #cce6ff;
 }
 
-.draft-board tr:nth-child(odd) {
+.draft-board tr:th {
+  background-color: #fcfcff;
+}
+
+.draft-board tr:nth-child(even) {
   background-color: #e6f2ff;
 }
 
