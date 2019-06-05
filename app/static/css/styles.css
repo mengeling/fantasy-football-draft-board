@@ -118,6 +118,7 @@ td {
 .login-cancel-button,
 .popup-scoring-button,
 .popup-cancel-button {
+  font-size: 0.85em;
   margin: 1%;
   padding: 1%;
 }
@@ -340,16 +341,12 @@ td {
   cursor: default;
 }
 
+.draft-board tr:nth-child(odd) td {
+//  background-color: #e6f2ff;
+}
+
 .draft-board tr:hover {
   background-color: #cce6ff;
-}
-
-.draft-board tr:th {
-  background-color: #fcfcff;
-}
-
-.draft-board tr:nth-child(even) {
-  background-color: #e6f2ff;
 }
 
 .fake-link {
