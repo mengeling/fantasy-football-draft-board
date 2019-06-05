@@ -3,7 +3,7 @@ body {
   text-align: center;
   display: block;
   font-family: "Playfair Display SC", "Helvetica", "Sans";
-  background-color: #e6f2ff;
+  background-color: #fcfcff;
   margin-left: 2%;
   margin-right: 2%;
 }
@@ -153,7 +153,7 @@ td {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2.5%;
-  background-color: #fcfcff;
+  background-color: #e6f2ff;
   text-align: left;
   height: 160px;
 }
@@ -267,8 +267,8 @@ td {
 }
 
 .search-board-wrapper {
-  border: 1.5px solid #fcfcff;
-  background-color: #fcfcff;
+  border: 1.5px solid #e6f2ff;
+  background-color: #e6f2ff;
 }
 
 .available-drafted-container {
@@ -285,18 +285,18 @@ td {
   margin: 0;
   margin-right: -0.3%;
   font-size: 0.7em;
-  border: 1.5px solid #fcfcff;
+  border: 1.5px solid #e6f2ff;
   cursor: pointer;
 }
 
 .available-button {
   padding-bottom: 0.1%;
-  background-color: #fcfcff;
+  background-color: #e6f2ff;
 }
 
 .drafted-button {
   padding-bottom: 0.1%;
-  background-color: #CACED3;
+  background-color: #fcfcff;
 }
 
 .position-team-player-search {
