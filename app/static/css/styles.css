@@ -153,7 +153,7 @@ td {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2.5%;
-  background-color: #EDF5FE;
+  background-color: #fcfcff;
   text-align: left;
   height: 160px;
 }
@@ -267,8 +267,8 @@ td {
 }
 
 .search-board-wrapper {
-  border: 1.5px solid #EDF5FE;
-  background-color: #EDF5FE;
+  border: 1.5px solid #fcfcff;
+  background-color: #fcfcff;
 }
 
 .available-drafted-container {
@@ -285,13 +285,13 @@ td {
   margin: 0;
   margin-right: -0.3%;
   font-size: 0.7em;
-  border: 1.5px solid #EDF5FE;
+  border: 1.5px solid #fcfcff;
   cursor: pointer;
 }
 
 .available-button {
   padding-bottom: 0.1%;
-  background-color: #EDF5FE;
+  background-color: #fcfcff;
 }
 
 .drafted-button {
