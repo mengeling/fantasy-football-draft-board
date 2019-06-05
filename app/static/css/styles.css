@@ -341,11 +341,15 @@ td {
   cursor: default;
 }
 
-.draft-board tr:nth-child(odd) td {
-//  background-color: #e6f2ff;
+.draft-board tr:nth-child(even) td {
+  background-color: #fcfcff;
 }
 
-.draft-board tr:hover {
+.draft-board tr:nth-child(odd) td {
+  background-color: #e6f2ff;
+}
+
+.draft-board tr:hover td {
   background-color: #cce6ff;
 }
 
