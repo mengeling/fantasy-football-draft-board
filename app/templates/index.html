@@ -54,10 +54,10 @@
                 <div class="player-pic-container">
                     <img class="player-pic" id="{{ id }}" src="{{ img_url }}" onerror="this.src='https://images.fantasypros.com/images/photo_missing_square.jpg'">
                 </div>
-                <div class="player-bio-container">
+                 <div class="player-bio-container">
                     <h3 class="player-name">{{ name }}</h3>
                     <h5 class="player-team-pos">{{ team }} {{ position }}</h5>
-                    <div class="player-bio-sub">
+		    <div class="player-bio-sub">
                         <p class="player-detail-desc">Height</p><p class="player-detail-height">{{ height }}</p>
                         <p class="player-detail-desc">Age</p><p class="player-detail-age">{{ age }}</p>
                     </div>
@@ -65,7 +65,7 @@
                         <p class="player-detail-desc">Weight</p><p class="player-detail-weight">{{ weight }}</p>
                         <p class="player-detail-desc">College</p><p class="player-detail-college">{{ college }}</p>
                     </div>
-                </div>
+		</div>
                 <div class="player-tables">
                     <div class="player-table">
                         <h4 class="rank-header">Rankings</h4>
@@ -80,7 +80,9 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
+		<div class="draft-undraft-container">
+                    <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
+                </div>
             </div>
             <div class="board-container">
                 <div class="available-drafted-container">
