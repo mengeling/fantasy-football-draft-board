@@ -14,7 +14,7 @@
                 <div class="login-content">
                     <p>Enter Your Full Name</p>
                     <div class="username-div">
-                        <input type="search" placeholder="First and Last Name" class="username-input">
+                        <input type="search" placeholder="First and Last Name" class="username-input" autofocus="autofocus">
                     </div>
                     <button type="button"  class="login-button">View My Draft Board</button>
                 </div>
@@ -66,6 +66,9 @@
                         <p class="player-detail-desc">College</p><p class="player-detail-college">{{ college }}</p>
                     </div>
                 </div>
+		<div class="draft-undraft-container">
+                    <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
+                </div>
                 <div class="player-tables">
                     <div class="player-table">
                         <h4 class="rank-header">Rankings</h4>
@@ -79,9 +82,6 @@
                             {{ stats | safe }}
                         </div>
                     </div>
-                </div>
-		<div class="draft-undraft-container">
-                    <button type="button" id="draft-undraft-button" class="0">Draft Selected Player</button>
                 </div>
             </div>
             <div class="board-container">

@@ -156,10 +156,10 @@ td {
 }
 
 .player-pic-container {
-  float: left;
   height: 160px;
   width: 170px;
   margin: 0;
+  float: left;
 }
 
 .player-pic {
@@ -167,9 +167,9 @@ td {
 }
 
 .player-bio-container {
-  float: left;
   height: 100%;
-  width: 19%;
+  width: 16.5%;
+  float: left;
 }
 
 .player-name,
@@ -202,10 +202,9 @@ td {
 }
 
 .player-tables {
-  width: 53%;
   height: 100%;
-  margin: 0;
-  display: inline-block;
+  margin-right: 1%;
+  overflow: hidden;
 }
 
 .player-table {
@@ -240,18 +239,21 @@ td {
 
 .draft-undraft-container {
   height: 100%;
-  width: 8%;
-  display: inline-block;
+  width: 12%;
+  display: flex;
+  align-items: center;
   vertical-align: top;
-  float: right;
+  float: left;
 }
 
 #draft-undraft-button {
   font-size: 0.8em;
   padding: 3%;
-  margin-top: 10%;
-  margin-right: 7%;
+  margin-top: 5%;
+  margin-right: 35%;
   font-weight: 600;
+  display: inline-block;
+  vertical-align: middle;
 }
 /* End formatting for player details */
 
