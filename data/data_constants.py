@@ -243,6 +243,7 @@ CREATE TABLE draft_board_{} (
     fantasy_pts          INT,
     fantasy_pts_per_game DOUBLE PRECISION,
     drafted              INT,
+    created_timestamp    TIMESTAMP,
     player               TEXT
 );
 """

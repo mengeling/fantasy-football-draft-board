@@ -66,6 +66,9 @@ def select_top_player_board(username="", drafted=0):
         board = df[list(c.BOARD_HEADERS.keys())].rename(columns=c.BOARD_HEADERS, index=str)
         board = board.to_html(index=False, escape=False)
 
+        # Get the ranking refresh date
+        refresh_date = "Rankings As Of " + str(df["created_timestamp"].dt.date.iloc[0])
+
     # If it fails, create placeholder data and convert it to HTML
     except:
         bio = c.PLAYER_BIO_PLACEHOLDERS
@@ -75,7 +78,8 @@ def select_top_player_board(username="", drafted=0):
         stats = stats.rename(columns=c.PLAYER_STAT_HEADERS["qb"], index=str).to_html(index=False, escape=False)
         board = pd.DataFrame(columns=list(c.BOARD_HEADERS.keys()))
         board = board.rename(columns=c.BOARD_HEADERS, index=str).to_html(index=False, escape=False)
-    return bio, rankings, stats, board
+        refresh_date = ""
+    return bio, rankings, stats, board, refresh_date
 
 
 @app.route("/", methods=["GET"])
@@ -85,8 +89,8 @@ def index():
     """
 
     # Create placeholders
-    bio, rankings, stats, board = select_top_player_board()
-    return render_template("index.html", rankings=rankings, stats=stats, board=board, **bio)
+    bio, rankings, stats, board, refresh_date = select_top_player_board()
+    return render_template("index.html", rankings=rankings, stats=stats, board=board, refresh_date=refresh_date, **bio)
 
 
 @app.route("/check-if-board-exists/", methods=["GET"])
@@ -110,8 +114,8 @@ def get_data():
 
     # Get top available player, draft board, and render them
     username = request.args.get("username")
-    bio, rankings, stats, board = select_top_player_board(username)
-    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
+    bio, rankings, stats, board, refresh_date = select_top_player_board(username)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board, "refresh_date": refresh_date})
 
 
 @app.route("/get-player-details/", methods=["GET"])
@@ -138,7 +142,7 @@ def get_drafted_board():
     # Use drafted value to get top player, draft board, and pass them back as JSON
     username = request.args.get("username")
     drafted = int(request.args.get("drafted"))
-    bio, rankings, stats, board = select_top_player_board(username, drafted)
+    bio, rankings, stats, board, _ = select_top_player_board(username, drafted)
     return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
@@ -188,7 +192,7 @@ def draft_undraft_player():
     engine.execute(c.UPDATE_BOARD.format(username, updated_drafted, player_id))
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    bio, rankings, stats, board = select_top_player_board(username, drafted)
+    bio, rankings, stats, board, _ = select_top_player_board(username, drafted)
     return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
 
 
@@ -204,8 +208,8 @@ def download_data():
     g.get_data(username, scoring_option)
 
     # Retrieve top player, updated draft board, and pass them back as JSON
-    bio, rankings, stats, board = select_top_player_board(username)
-    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board})
+    bio, rankings, stats, board, refresh_date = select_top_player_board(username)
+    return jsonify({"bio": bio, "rankings": rankings, "stats": stats, "board": board, "refresh_date": refresh_date})
 
 
 if __name__ == "__main__":

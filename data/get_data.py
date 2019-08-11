@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
+from datetime import datetime
 
 sys.path.append("/var/www/ffball/fantasy-football-draft-board/data/")
 import data_constants as c
@@ -32,8 +33,11 @@ def create_draft_board(engine, username, df_rankings, df_stats):
     for col in c.FILL_NULL_COLS:
         df[col] = pd.to_numeric(df[col]).fillna(0).astype(int)
 
-    # Create drafted column with zeros (draft hasn't started) and combine name, team, and position into player
+    # Create drafted column with zeros since no one's been drafted and create timestamp column
     df["drafted"] = np.zeros(df.shape[0])
+    df["created_timestamp"] = datetime.now()
+
+    # Create styled player column for app that combines name, team, and position columns
     df["player"] = (
         "<span class='fake-link' id='"
         + df["id"].astype(str)

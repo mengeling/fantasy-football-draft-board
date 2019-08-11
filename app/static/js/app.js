@@ -26,6 +26,7 @@ function get_data() {
       $("#draft-undraft-button").attr("class", "0");
       update_player_data(data);
       $(".draft-board").html(data.board);
+      $(".refresh-date").text(data.refresh_date);
     }
   });
 }
@@ -142,6 +143,7 @@ function download_data(scoring_option) {
       $("#draft-undraft-button").attr("class", "0");
       update_player_data(data);
       $(".draft-board").html(data.board);
+      $(".refresh-date").text(data.refresh_date);
     }
   });
 }
