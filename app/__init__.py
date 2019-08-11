@@ -67,7 +67,7 @@ def select_top_player_board(username="", drafted=0):
         board = board.to_html(index=False, escape=False)
 
         # Get the ranking refresh date
-        refresh_date = "Rankings As Of " + str(df["created_timestamp"].dt.date.iloc[0])
+        refresh_date = "Rankings Date: " + str(df["created_timestamp"].dt.date.iloc[0])
 
     # If it fails, create placeholder data and convert it to HTML
     except:
