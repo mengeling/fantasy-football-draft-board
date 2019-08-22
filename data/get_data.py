@@ -132,7 +132,6 @@ def scrape_bio(row_data, bio_headers):
 
     # If there's an image with hidden-phone class it's a player so create image URL
     player_image = html.find("img", class_="hidden-phone")
-    print(html)
     if player_image:
         img_url = "https:" + player_image["src"]
         row_data.append(img_url)
@@ -154,6 +153,7 @@ def scrape_bio(row_data, bio_headers):
     # If it's a team go to Team Stats tab in the top banner to get team logo
     else:
         print(row_data)
+        print(html)
         banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
         stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
         html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
