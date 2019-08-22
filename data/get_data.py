@@ -152,6 +152,7 @@ def scrape_bio(row_data, bio_headers):
 
     # If it's a team go to Team Stats tab in the top banner to get team logo
     else:
+        print(row_data)
         banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
         stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
         html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
