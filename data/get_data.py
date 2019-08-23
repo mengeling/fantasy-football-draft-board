@@ -162,7 +162,6 @@ def scrape_bio(row_data, bio_headers):
 
     # Else leave everything null
     else:
-        print(row_data)
         row_data.extend([None, None, None, None, None])
     return row_data
 
