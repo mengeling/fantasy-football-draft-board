@@ -152,7 +152,7 @@ def scrape_bio(row_data, bio_headers):
                 row_data.append(None)
 
     # Else if there's a team banner, go to Team Stats tab in the banner to get team logo
-    else if team_banner:
+    elif team_banner:
         stats_url = team_banner.find_all("li")[2].find("a").attrs.get("href")
         html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
         img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
