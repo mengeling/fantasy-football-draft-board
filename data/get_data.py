@@ -130,8 +130,9 @@ def scrape_bio(row_data, bio_headers):
     bio_url = row_data[2]
     html = BeautifulSoup(requests.get(bio_url).text, "html.parser")
 
-    # If there's an image with hidden-phone class it's a player so create image URL
+    # If there's an image with hidden-phone class it's a player. If there's a pills pills list, it's a team.
     player_image = html.find("img", class_="hidden-phone")
+    team_banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
     if player_image:
         img_url = "https:" + player_image["src"]
         row_data.append(img_url)
@@ -150,17 +151,19 @@ def scrape_bio(row_data, bio_headers):
             else:
                 row_data.append(None)
 
-    # If it's a team go to Team Stats tab in the top banner to get team logo
-    else:
-        print(row_data)
-        print(html)
-        banner = html.find("ul", class_="pills pills--horizontal desktop-pills")
-        stats_url = banner.find_all("li")[2].find("a").attrs.get("href")
+    # Else if there's a team banner, go to Team Stats tab in the banner to get team logo
+    else if team_banner:
+        stats_url = team_banner.find_all("li")[2].find("a").attrs.get("href")
         html = BeautifulSoup(requests.get(c.BASE_URL + stats_url).text, "html.parser")
         img_url = "https:" + html.find("div", class_="three columns").find("img")["src"]
 
         # Add img URL and add nulls to the rest of the bio details bc the columns aren't applicable
         row_data.extend([img_url, None, None, None, None])
+
+    # Else leave everything null
+    else:
+        print(row_data)
+        row_data.extend([None, None, None, None, None])
     return row_data
 
 
