@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from collections import OrderedDict
 
-HOST_NAME = "ec2-18-233-6-4.compute-1.amazonaws.com"
+HOST_NAME = "ec2-54-162-53-255.compute-1.amazonaws.com"
 
 DB_ENGINE = "postgresql://postgres:postgres@localhost:5432/ffball"
 
