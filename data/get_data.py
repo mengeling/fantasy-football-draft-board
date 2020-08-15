@@ -131,7 +131,7 @@ def scrape_bio(row_data, bio_headers):
 
     # If there's a picture elemenet it's a player's bio. Get their image and bio details
     try:
-        img_url = "https:" + html.findAll("picture")[0].find("img")["src"]
+        img_url = html.findAll("picture")[0].find("img")["src"]
         row_data.append(img_url)
 
         # Get bio details in the clearfix div
