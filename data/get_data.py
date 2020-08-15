@@ -104,9 +104,8 @@ def scrape_stats(url, headers_dict, stats_all_headers):
             # Skip player name in index 0 and then get stats
             class_name = row.attrs.get("class")
             row_data = [re.split(r"(\d+)", class_name[0])[1]]
-            for i, td in enumerate(row.find_all("td")[:-1]):
-                if i > 0:
-                    row_data.append(td.text)
+            for i, td in enumerate(row.find_all("td")[2:-1]):
+                row_data.append(td.text)
             rows.append(row_data)
 
         # Create dataframe for the position and add it to the dictionary
