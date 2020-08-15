@@ -131,9 +131,8 @@ def scrape_bio(row_data, bio_headers):
     html = BeautifulSoup(requests.get(bio_url).text, "html.parser")
 
     # If there's a picture elemenet it's a player's bio. Get their image and bio details
-    player_image = html.findAll("picture")[0].find("img")
-    if player_image:
-        img_url = "https:" + player_image["src"]
+    try:
+        img_url = "https:" + html.findAll("picture")[0].find("img")["src"]
         row_data.append(img_url)
 
         # Get bio details in the clearfix div
@@ -151,7 +150,7 @@ def scrape_bio(row_data, bio_headers):
                 row_data.append(None)
 
     # Otherwise it's a team or bad link so leave everything null
-    else:
+    except:
         row_data.extend([None, None, None, None, None])
     return row_data
 
