@@ -5,6 +5,7 @@ import re
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from sqlalchemy import create_engine
 from datetime import datetime
 
@@ -154,23 +155,25 @@ def scrape_bio(row_data, bio_headers):
     return row_data
 
 
-def scrape_rankings(url, ranking_headers, bio_headers):
+def scrape_rankings(driver, url, ranking_headers, bio_headers):
     """
     Get fantasy rankings using the URL provided
 
+    :param driver: Selenium driver
     :param url: String, URL for the rankings
     :param ranking_headers: List, column headers for ranking data
     :param bio_headers: List, column headers for bio data
     :return: Pandas dataframe, ranking data
     """
 
-    # Use beautiful soup to retrieve HTML table with rankings
-    html = BeautifulSoup(requests.get(url).text, "html.parser")
-    table = html.find("table", id="rank-data").find_all("tbody")[0]
+    # Use Selenium and beautiful soup to retrieve HTML table with rankings
+    driver.get(url)
+    table = driver.find_elements_by_css_selector("table")[0].get_attribute('innerHTML')
+    tbody = BeautifulSoup(table, "html.parser").find_all("tbody")[0]
 
     # Iterate through the rows (tr) in the table
     rows = []
-    for row in table.find_all("tr"):
+    for row in tbody.find_all("tr"):
 
         # Ignore rows that don't have players in them (class = "player-row")
         if "player-row" in row.attrs.get("class"):
@@ -186,12 +189,9 @@ def scrape_rankings(url, ranking_headers, bio_headers):
                 # Get bio URL, name, and team from index 2
                 elif i == 2:
                     player = td.find("a")
-                    bio_url = c.BASE_URL + player.attrs.get("href")
-                    name = player.find("span", class_="full-name").text
-                    if td.find("small", class_="grey"):
-                        team = td.find("small", class_="grey").text
-                    else:
-                        name, team = name.replace(")", "").split(" (")
+                    bio_url = player.attrs.get("href")
+                    name = player.text
+                    team = td.find("span").text[1:-1]
                     row_data.extend([bio_url, name, team])
 
                 # Split position and position ranking from index 3
@@ -199,8 +199,8 @@ def scrape_rankings(url, ranking_headers, bio_headers):
                     pos_ranking = re.split(r"(\d+)", td.text)
                     row_data.extend(pos_ranking[:-1])
 
-                # After index 3 get value from td.text
-                elif i > 3:
+                # Get bye week from index 4
+                elif i == 4:
                     row_data.append(td.text)
 
             # Use scrape_bio function to append player photo URL and bio details to list
@@ -209,10 +209,11 @@ def scrape_rankings(url, ranking_headers, bio_headers):
     return pd.DataFrame(rows, columns=ranking_headers)
 
 
-def get_data(username, scoring_option):
+def get_data(driver, username, scoring_option):
     """
     Scrape data from fantasy pros and load it into DB
 
+    :param driver: Selenium driver
     :param username: String, username that's included in the table name
     :param scoring_option: String, selected scoring option
     """
@@ -229,7 +230,7 @@ def get_data(username, scoring_option):
         stats_url = c.STATS_URL + "?scoring=HALF"
 
     # Scrape rankings and stats
-    df_rankings = scrape_rankings(rankings_url, c.RANKINGS_HEADERS, c.BIO_HEADERS)
+    df_rankings = scrape_rankings(driver, rankings_url, c.RANKINGS_HEADERS, c.BIO_HEADERS)
     df_stats = scrape_stats(stats_url, c.STATS_HEADERS, c.STATS_ALL_HEADERS)
 
     # Create DB connection and then write combined rankings, bios, and stats to DB
@@ -239,6 +240,11 @@ def get_data(username, scoring_option):
 
 if __name__ == "__main__":
 
+    # Create Selenium driver used to parse HTML
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    driver = webdriver.Chrome(c.DRIVER_PATH, options=options)
+
     # If executed as script pass username and scoring option into get_data function
     username, scoring_option = sys.argv[1:3]
-    get_data(username, scoring_option)
+    get_data(driver, username, scoring_option)

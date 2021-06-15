@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 DB_ENGINE = "postgresql://postgres:postgres@localhost:5432/ffball"
+DRIVER_PATH = "/var/www/ffball/chromedriver"
 
-BASE_URL = "https://www.fantasypros.com"
-RANKINGS_URL = BASE_URL + "/nfl/rankings/{}-cheatsheets.php"
-STATS_URL = BASE_URL + "/nfl/stats/{}.php"
-LOGIN_URL = "https://secure.fantasypros.com/accounts/login/?next=https://www.fantasypros.com/"
+RANKINGS_URL = "https://www.fantasypros.com/nfl/rankings/{}-cheatsheets.php"
+STATS_URL = "https://www.fantasypros.com/nfl/stats/{}.php"
 
 FILL_NULL_COLS = ["bye_week", "avg_draft_pick", "fantasy_pts"]
 BIO_HEADERS = ["Height", "Weight", "Age", "College"]
@@ -17,11 +16,6 @@ RANKINGS_HEADERS = [
     "position",
     "position_ranking",
     "bye_week",
-    "best_ranking",
-    "worst_ranking",
-    "avg_ranking",
-    "std_dev_ranking",
-    "avg_draft_pick",
     "img_url",
     "height",
     "weight",
@@ -189,11 +183,6 @@ CREATE TABLE draft_board_{} (
     position             TEXT,
     position_ranking     INT,
     bye_week             INT,
-    best_ranking         INT,
-    worst_ranking        INT,
-    avg_ranking          DOUBLE PRECISION,
-    std_dev_ranking      DOUBLE PRECISION,
-    avg_draft_pick       INT,
     img_url              TEXT,
     height               TEXT,
     weight               TEXT,

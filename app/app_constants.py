@@ -33,11 +33,6 @@ PLAYER_RANK_HEADERS = OrderedDict(
     [
         ("rank", "Overall"),
         ("position_ranking", "Position"),
-        ("best_ranking", "Best"),
-        ("worst_ranking", "Worst"),
-        ("avg_ranking", "Average"),
-        ("std_dev_ranking", "Std Dev"),
-        ("avg_draft_pick", "ADP"),
     ]
 )
 PLAYER_STAT_HEADERS = {
@@ -145,11 +140,6 @@ BOARD_HEADERS = OrderedDict(
         ("player", "PLAYER"),
         ("bye_week", "BYE"),
         ("position_ranking", "POS"),
-        ("best_ranking", "BEST"),
-        ("worst_ranking", "WORST"),
-        ("avg_ranking", "AVG"),
-        ("std_dev_ranking", "STDEV"),
-        ("avg_draft_pick", "ADP"),
         ("fantasy_pts", "PTS"),
         ("pass_cmp", "PAC"),
         ("pass_yds", "PAYD"),
