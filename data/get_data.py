@@ -209,14 +209,18 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
     return pd.DataFrame(rows, columns=ranking_headers)
 
 
-def get_data(driver, username, scoring_option):
+def get_data(username, scoring_option):
     """
     Scrape data from fantasy pros and load it into DB
 
-    :param driver: Selenium driver
     :param username: String, username that's included in the table name
     :param scoring_option: String, selected scoring option
     """
+
+    # Create Selenium driver used to parse HTML
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    driver = webdriver.Chrome(c.DRIVER_PATH, options=options)
 
     # Based on the scoring option, get the fantasy pros URLs to the rankings and stats pages
     if scoring_option == "standard":
@@ -240,11 +244,6 @@ def get_data(driver, username, scoring_option):
 
 if __name__ == "__main__":
 
-    # Create Selenium driver used to parse HTML
-    options = webdriver.ChromeOptions()
-    options.add_argument('headless')
-    driver = webdriver.Chrome(c.DRIVER_PATH, options=options)
-
     # If executed as script pass username and scoring option into get_data function
     username, scoring_option = sys.argv[1:3]
-    get_data(driver, username, scoring_option)
+    get_data(username, scoring_option)
