@@ -167,16 +167,19 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
     :return: Pandas dataframe, ranking data
     """
 
-    # Use Selenium and beautiful soup to retrieve HTML table with rankings
+    # Use Selenium to load first n rows of table and scroll down to the nth row to load the rest of the rows
     driver.get(url)
-    table = driver.find_elements_by_css_selector("table")[0].get_attribute('innerHTML')
-    tbody = BeautifulSoup(table, "html.parser").find_all("tbody")[0]
+    table = driver.find_element_by_xpath("//*/table[@id='ranking-table']")
+    last_row = table.find_elements_by_xpath("tbody/tr[@class='player-row']")[-1]
+    driver.execute_script("arguments[0].scrollIntoView();", last_row)
+    selenium_rows = table.find_elements_by_xpath("tbody/tr[@class='player-row']")
 
     # Iterate through the rows (tr) in the table
     rows = []
-    for row in tbody.find_all("tr"):
+    for selenium_row in selenium_rows:
 
         # Ignore rows that don't have players in them (class = "player-row")
+        row = selenium_row.get_attribute("innerHTML")
         if "player-row" in row.attrs.get("class"):
 
             # Loop through row values to get player data
@@ -205,8 +208,8 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
                     row_data.append(td.text)
 
             # Use scrape_bio function to append player photo URL and bio details to list
-            row_data = scrape_bio(row_data, bio_headers)
-            rows.append(row_data)
+            row_data_with_bio = scrape_bio(row_data, bio_headers)
+            rows.append(row_data_with_bio)
     return pd.DataFrame(rows, columns=ranking_headers)
 
 
