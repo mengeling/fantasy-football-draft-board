@@ -178,38 +178,35 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
     rows = []
     for selenium_row in selenium_rows:
 
-        # Ignore rows that don't have players in them (class = "player-row")
+        # Loop through row values to get player data
         row = BeautifulSoup(selenium_row.get_attribute("innerHTML"), "html.parser")
-        if "player-row" in row.attrs.get("class"):
+        row_data = []
+        for i, td in enumerate(row.find_all("td")[:5]):
 
-            # Loop through row values to get player data
-            row_data = []
-            for i, td in enumerate(row.find_all("td")[:5]):
+            # Get overall ranking from index 0 and skip index 1 (empty check box)
+            if i == 0:
+                row_data.append(td.text)
 
-                # Get overall ranking from index 0 and skip index 1 (empty check box)
-                if i == 0:
-                    row_data.append(td.text)
+            # Get bio URL, name, and team from index 2
+            elif i == 2:
+                player_id = td.find("div").attrs.get("data-player")
+                bio_url = td.find("a").attrs.get("href")
+                name = td.find("a").text
+                team = td.find("span").text[1:-1]
+                row_data.extend([player_id, bio_url, name, team])
 
-                # Get bio URL, name, and team from index 2
-                elif i == 2:
-                    player_id = td.find("div").attrs.get("data-player")
-                    bio_url = td.find("a").attrs.get("href")
-                    name = td.find("a").text
-                    team = td.find("span").text[1:-1]
-                    row_data.extend([player_id, bio_url, name, team])
+            # Split position and position ranking from index 3
+            elif i == 3:
+                pos_ranking = re.split(r"(\d+)", td.text)
+                row_data.extend(pos_ranking[:-1])
 
-                # Split position and position ranking from index 3
-                elif i == 3:
-                    pos_ranking = re.split(r"(\d+)", td.text)
-                    row_data.extend(pos_ranking[:-1])
+            # Get bye week from index 4
+            elif i == 4:
+                row_data.append(td.text)
 
-                # Get bye week from index 4
-                elif i == 4:
-                    row_data.append(td.text)
-
-            # Use scrape_bio function to append player photo URL and bio details to list
-            row_data_with_bio = scrape_bio(row_data, bio_headers)
-            rows.append(row_data_with_bio)
+        # Use scrape_bio function to append player photo URL and bio details to list
+        row_data_with_bio = scrape_bio(row_data, bio_headers)
+        rows.append(row_data_with_bio)
     return pd.DataFrame(rows, columns=ranking_headers)
 
 
