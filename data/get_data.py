@@ -33,7 +33,7 @@ def create_draft_board(engine, username, df_rankings, df_stats):
     stat_cols = df_stats.columns
     df[stat_cols] = df[stat_cols].fillna(0)
     for col in c.FILL_NULL_COLS:
-        df[col] = pd.to_numeric(df[col].astype(str).str.replace(",", "")).fillna(0).astype(int)
+        df[col] = pd.to_numeric(df[col].astype(str).str.replace(r"[^0-9]", "")).fillna(0).astype(int)
 
     # Create drafted column with zeros since no one's been drafted and create timestamp column
     df["drafted"] = np.zeros(df.shape[0])
