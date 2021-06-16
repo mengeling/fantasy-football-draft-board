@@ -233,7 +233,7 @@ td {
 }
 
 .rank-table table {
-  width: 80%;
+  width: 35%;
 }
 
 .stats-table table {
@@ -310,7 +310,7 @@ td {
 }
 
 .position-team-player-search {
-  width: 98%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   margin-top: 1%;
@@ -337,7 +337,7 @@ td {
 
 .table-wrapper {
   background-color: #fcfcff;
-  width: 98%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
 }

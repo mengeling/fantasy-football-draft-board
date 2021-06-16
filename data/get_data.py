@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 import requests
 import sys
@@ -178,9 +179,9 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
         # Ignore rows that don't have players in them (class = "player-row")
         if "player-row" in row.attrs.get("class"):
 
-            # Add player ID to an empty list and then loop through row values
-            row_data = [row.attrs.get("data-id")]
-            for i, td in enumerate(row.find_all("td")[:-1]):
+            # Loop through row values to get player data
+            row_data = []
+            for i, td in enumerate(row.find_all("td")[:5]):
 
                 # Get overall ranking from index 0 and skip index 1 (empty check box)
                 if i == 0:
@@ -188,11 +189,11 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
 
                 # Get bio URL, name, and team from index 2
                 elif i == 2:
-                    player = td.find("a")
-                    bio_url = player.attrs.get("href")
-                    name = player.text
+                    player_id = td.find("div").attrs.get("data-player")
+                    bio_url = td.find("a").attrs.get("href")
+                    name = td.find("a").text
                     team = td.find("span").text[1:-1]
-                    row_data.extend([bio_url, name, team])
+                    row_data.extend([player_id, bio_url, name, team])
 
                 # Split position and position ranking from index 3
                 elif i == 3:

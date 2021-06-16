@@ -8,8 +8,8 @@ STATS_URL = "https://www.fantasypros.com/nfl/stats/{}.php"
 FILL_NULL_COLS = ["bye_week", "fantasy_pts"]
 BIO_HEADERS = ["Height", "Weight", "Age", "College"]
 RANKINGS_HEADERS = [
-    "id",
     "rank",
+    "id",
     "bio_url",
     "name",
     "team",
