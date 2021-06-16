@@ -179,7 +179,7 @@ def scrape_rankings(driver, url, ranking_headers, bio_headers):
     for selenium_row in selenium_rows:
 
         # Ignore rows that don't have players in them (class = "player-row")
-        row = selenium_row.get_attribute("innerHTML")
+        row = BeautifulSoup(selenium_row.get_attribute("innerHTML"), "html.parser")
         if "player-row" in row.attrs.get("class"):
 
             # Loop through row values to get player data
