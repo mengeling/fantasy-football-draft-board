@@ -237,6 +237,7 @@ def get_data(username, scoring_option):
 
     # Scrape rankings and stats
     df_rankings = scrape_rankings(driver, rankings_url, c.RANKINGS_HEADERS, c.BIO_HEADERS)
+    driver.quit()
     df_stats = scrape_stats(stats_url, c.STATS_HEADERS, c.STATS_ALL_HEADERS)
 
     # Create DB connection and then write combined rankings, bios, and stats to DB
