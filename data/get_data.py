@@ -222,6 +222,7 @@ def get_data(username, scoring_option):
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     driver = webdriver.Chrome(c.DRIVER_PATH, options=options)
+    driver.set_page_load_timeout(10)
 
     # Based on the scoring option, get the fantasy pros URLs to the rankings and stats pages
     if scoring_option == "standard":
