@@ -5,7 +5,7 @@ DRIVER_PATH = "/var/www/ffball/chromedriver"
 RANKINGS_URL = "https://www.fantasypros.com/nfl/rankings/{}-cheatsheets.php"
 STATS_URL = "https://www.fantasypros.com/nfl/stats/{}.php"
 
-FILL_NULL_COLS = ["bye_week", "avg_draft_pick", "fantasy_pts"]
+FILL_NULL_COLS = ["bye_week", "fantasy_pts"]
 BIO_HEADERS = ["Height", "Weight", "Age", "College"]
 RANKINGS_HEADERS = [
     "id",
