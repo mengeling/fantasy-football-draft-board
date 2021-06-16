@@ -5,7 +5,9 @@
 
 This web application provides the same interactive fantasy football drafting experience as the official draft boards on ESPN, Yahoo, NFL.com, etc., but it uses consensus player rankings consolidated from 100+ experts.
 
+### App Demo
 ![Demo](app/static/img/fantasy_football_recording.gif)
 <br>
 <br>
+### App Screenshot
 ![App Screenshot](app/static/img/app_pic.png)
